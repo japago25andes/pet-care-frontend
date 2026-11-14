@@ -1,0 +1,104 @@
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 8px;
+
+  mat-form-field {
+    flex: 1 1 170px;
+    --mat-form-field-outlined-container-color: #fff;
+  }
+
+  &__texto {
+    flex-grow: 2 !important;
+  }
+}
+
+.progreso {
+  height: 4px;
+  margin-bottom: 8px;
+}
+
+.productos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+  gap: 14px;
+}
+
+.producto {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--pel-borde);
+  border-radius: 16px;
+  background: #fff;
+
+  &__imagen {
+    height: 130px;
+  }
+
+  &__cuerpo {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 14px 16px 16px;
+  }
+
+  h2 {
+    color: var(--pel-marino);
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 1.25;
+  }
+
+  &__veterinaria {
+    margin-top: 2px;
+    color: var(--pel-texto-suave);
+    font-size: 13px;
+    text-decoration: none;
+
+    &:hover {
+      color: var(--pel-azul);
+    }
+  }
+
+  p {
+    display: -webkit-box;
+    overflow: hidden;
+    margin-top: 6px;
+    color: var(--pel-texto-suave);
+    font-size: 14px;
+    line-height: 1.4;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  &__pie {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+    padding-top: 12px;
+
+    div {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+
+    strong {
+      color: var(--pel-marino);
+      font-size: 18px;
+    }
+  }
+}
+
+.mas {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}

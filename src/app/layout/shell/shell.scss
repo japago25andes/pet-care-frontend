@@ -1,0 +1,142 @@
+.shell {
+  height: 100dvh;
+  --mat-sidenav-content-background-color: var(--pel-fondo);
+}
+
+.lateral {
+  width: 248px;
+  padding: 20px 12px;
+  border: 0;
+  border-radius: 0;
+  --mat-sidenav-container-background-color: var(--pel-marino);
+
+  &__marca {
+    display: block;
+    margin: 0 8px 24px;
+    text-decoration: none;
+  }
+
+  nav {
+    display: grid;
+    gap: 2px;
+  }
+
+  &__contador {
+    margin-left: auto;
+    padding: 0 7px;
+    border-radius: 999px;
+    background: var(--pel-celeste);
+    color: var(--pel-marino);
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 20px;
+  }
+
+  &__item {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 11px 12px;
+    border-radius: 10px;
+    color: #c9daec;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+
+    &:hover {
+      background: rgb(255 255 255 / 8%);
+      color: #fff;
+    }
+
+    &:focus-visible {
+      outline-color: var(--pel-celeste);
+    }
+
+    &--activo .lateral__contador {
+      background: var(--pel-marino);
+      color: #fff;
+    }
+
+    &--activo {
+      background: var(--pel-celeste);
+      color: var(--pel-marino);
+      font-weight: 700;
+
+      &:hover {
+        background: var(--pel-celeste);
+        color: var(--pel-marino);
+      }
+    }
+  }
+}
+
+.barra {
+  position: sticky;
+  z-index: 2;
+  top: 0;
+  display: flex;
+  align-items: center;
+  height: 64px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--pel-borde);
+  background: #fff;
+
+  &__espacio {
+    flex: 1;
+  }
+}
+
+.usuario {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  color: var(--pel-texto);
+  font: inherit;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--pel-fondo);
+  }
+
+  &__avatar {
+    display: grid;
+    width: 38px;
+    height: 38px;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--pel-azul);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 800;
+  }
+
+  &__datos {
+    display: grid;
+    text-align: left;
+    line-height: 1.2;
+
+    small {
+      color: var(--pel-texto-suave);
+    }
+  }
+}
+
+.contenido {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 28px 24px 48px;
+}
+
+@media (max-width: 860px) {
+  .usuario__datos {
+    display: none;
+  }
+
+  .contenido {
+    padding: 20px 16px 40px;
+  }
+}

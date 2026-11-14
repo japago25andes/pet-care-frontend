@@ -1,0 +1,113 @@
+<div class="pagina-encabezado">
+  <h1 class="pagina-titulo">Carrito</h1>
+</div>
+
+<app-carga [recurso]="carrito" />
+
+@if (carrito.hasValue()) {
+  @let datos = carrito.value();
+
+  @if (datos.detalles.length === 0) {
+    <app-vacio class="caja" icono="shopping_cart" titulo="Tu carrito está vacío" texto="Agrega productos desde la tienda.">
+      <a matButton="filled" routerLink="/tienda">Ir a la tienda</a>
+    </app-vacio>
+  } @else {
+    <div class="columnas">
+      <section class="caja">
+        <div class="cabecera">
+          <h2>
+            @if (veterinaria.hasValue()) {
+              {{ veterinaria.value().nombre_comercial }}
+            }
+          </h2>
+          <button matButton type="button" [disabled]="ocupado()" (click)="vaciar()">Vaciar</button>
+        </div>
+
+        <ul class="items">
+          @for (item of datos.detalles; track item.id_detalle_carrito) {
+            <li>
+              <div class="items__info">
+                <strong>{{ item.nombre_producto }}</strong>
+                <small>{{ item.precio_unitario | currency: 'COP' : 'symbol-narrow' : '1.0-0' }} c/u</small>
+                @if (!item.disponible) {
+                  <app-etiqueta tono="error">Sin stock suficiente o no disponible</app-etiqueta>
+                }
+              </div>
+              <div class="cantidad">
+                <button
+                  matIconButton
+                  type="button"
+                  aria-label="Quitar una unidad"
+                  [disabled]="ocupado() || item.cantidad <= 1"
+                  (click)="cambiar(item, item.cantidad - 1)"
+                >
+                  <mat-icon>remove</mat-icon>
+                </button>
+                <span aria-live="polite">{{ item.cantidad }}</span>
+                <button
+                  matIconButton
+                  type="button"
+                  aria-label="Agregar una unidad"
+                  [disabled]="ocupado()"
+                  (click)="cambiar(item, item.cantidad + 1)"
+                >
+                  <mat-icon>add</mat-icon>
+                </button>
+              </div>
+              <strong class="items__subtotal">{{ item.subtotal | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</strong>
+              <button
+                matIconButton
+                type="button"
+                [attr.aria-label]="'Quitar ' + item.nombre_producto"
+                [disabled]="ocupado()"
+                (click)="quitar(item)"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </li>
+          }
+        </ul>
+      </section>
+
+      <section class="caja">
+        <h2>Finalizar compra</h2>
+
+        @if (error(); as mensaje) {
+          <p class="aviso aviso--error" role="alert" style="margin-top: 12px">{{ mensaje }}</p>
+        }
+
+        <form class="formulario" style="margin-top: 16px" [formGroup]="form" (ngSubmit)="confirmarPedido()" novalidate>
+          <mat-form-field>
+            <mat-label>Método de pago</mat-label>
+            <mat-select formControlName="metodo_pago">
+              <mat-option value="efectivo">Efectivo contra entrega</mat-option>
+              <mat-option value="tarjeta">Tarjeta</mat-option>
+              <mat-option value="transferencia">Transferencia</mat-option>
+            </mat-select>
+            <mat-error>{{ mensajeDeCampo(form.controls.metodo_pago) }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Dirección de entrega</mat-label>
+            <textarea matInput rows="2" formControlName="direccion_entrega"></textarea>
+            <mat-error>{{ mensajeDeCampo(form.controls.direccion_entrega) }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Notas (opcional)</mat-label>
+            <textarea matInput rows="2" formControlName="notas"></textarea>
+            <mat-error>{{ mensajeDeCampo(form.controls.notas) }}</mat-error>
+          </mat-form-field>
+
+          <div class="total">
+            <span>Total</span>
+            <strong>{{ datos.total | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</strong>
+          </div>
+
+          <button matButton="filled" type="submit" [disabled]="ocupado() || !todoDisponible()">Confirmar pedido</button>
+          <small class="nota">No se realiza ningún cobro: el método de pago solo se registra.</small>
+        </form>
+      </section>
+    </div>
+  }
+}

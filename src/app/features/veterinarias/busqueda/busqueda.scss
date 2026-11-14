@@ -1,0 +1,101 @@
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+
+  &__texto {
+    flex: 1 1 240px;
+    --mat-form-field-outlined-container-color: #fff;
+  }
+
+  &__radio {
+    width: 130px;
+  }
+
+  button {
+    height: 48px;
+  }
+}
+
+.resultados {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.lista {
+  display: grid;
+  gap: 10px;
+}
+
+.progreso {
+  height: 4px;
+  margin-top: -6px;
+}
+
+.veterinaria {
+  display: block;
+  padding: 16px;
+  border: 1px solid var(--pel-borde);
+  border-radius: 14px;
+  background: #fff;
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.15s;
+
+  &:hover {
+    border-color: var(--pel-azul);
+  }
+
+  &__cabecera {
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+    align-items: baseline;
+
+    strong {
+      color: var(--pel-marino);
+      font-size: 17px;
+    }
+  }
+
+  p {
+    margin-top: 4px;
+    color: var(--pel-texto-suave);
+  }
+
+  small {
+    display: block;
+    margin-top: 4px;
+    color: var(--pel-texto-suave);
+
+    b {
+      color: var(--pel-azul-oscuro);
+    }
+  }
+}
+
+.mas {
+  justify-self: center;
+}
+
+.mapa {
+  position: sticky;
+  top: 80px;
+  --alto-mapa: min(560px, calc(100dvh - 120px));
+}
+
+@media (max-width: 860px) {
+  .resultados {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .mapa {
+    position: static;
+    grid-row: 1;
+    --alto-mapa: 260px;
+  }
+}

@@ -1,0 +1,88 @@
+<a class="volver" routerLink="/mis-veterinarias">
+  <mat-icon>chevron_left</mat-icon>
+  Mis veterinarias
+</a>
+
+<app-carga [recurso]="veterinaria" />
+
+@if (veterinaria.hasValue()) {
+  @let datos = veterinaria.value();
+
+  <section class="caja cabecera">
+    <div class="cabecera__titulo">
+      <div>
+        <h1 class="pagina-titulo">{{ datos.nombre_comercial }}</h1>
+        <app-calificacion [valor]="datos.calificacion_promedio" />
+      </div>
+      <div class="cabecera__acciones">
+        <button matButton="outlined" type="button" (click)="editar(datos)">Editar</button>
+        <button matIconButton type="button" aria-label="Más opciones" [matMenuTriggerFor]="opciones">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #opciones="matMenu" xPosition="before">
+          <a mat-menu-item [routerLink]="['/veterinarias', datos.id_veterinaria]">
+            <mat-icon>visibility</mat-icon>
+            Ver como cliente
+          </a>
+          <button mat-menu-item (click)="desactivar(datos)"><mat-icon>block</mat-icon> Desactivar</button>
+        </mat-menu>
+      </div>
+    </div>
+    <ul>
+      <li><mat-icon>location_on</mat-icon> {{ datos.direccion }}</li>
+      <li><mat-icon>call</mat-icon> {{ datos.telefono }}</li>
+      @if (datos.horario_atencion; as horario) {
+        <li><mat-icon>schedule</mat-icon> {{ horario }}</li>
+      }
+      @if (datos.correo_electronico; as correo) {
+        <li><mat-icon>mail</mat-icon> {{ correo }}</li>
+      }
+      @if (datos.latitud === null) {
+        <li class="sin-mapa"><mat-icon>location_off</mat-icon> Sin coordenadas: no aparece en el mapa</li>
+      }
+    </ul>
+  </section>
+
+  <section class="caja" style="margin-top: 16px">
+    <div class="seccion-titulo">
+      <h2>Profesionales</h2>
+      <button matButton type="button" (click)="abrirProfesional()"><mat-icon>add</mat-icon> Agregar</button>
+    </div>
+    <app-carga [recurso]="profesionales" />
+    @if (profesionales.hasValue()) {
+      <ul class="registros">
+        @for (profesional of profesionales.value(); track profesional.id_profesional) {
+          <li class="registro">
+            <mat-icon class="registro__icono">stethoscope</mat-icon>
+            <div>
+              <div class="registro__titulo">{{ profesional.nombre_completo }}</div>
+              <p class="registro__detalle">
+                {{ profesional.especialidad ?? 'Sin especialidad' }}
+                @if (profesional.numero_registro_profesional; as registro) {
+                  · Registro {{ registro }}
+                }
+              </p>
+            </div>
+            <div class="registro__acciones">
+              <button matIconButton type="button" aria-label="Más opciones" [matMenuTriggerFor]="menuProfesional">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menuProfesional="matMenu" xPosition="before">
+                <button mat-menu-item (click)="abrirProfesional(profesional)"><mat-icon>edit</mat-icon> Editar</button>
+                <button mat-menu-item (click)="desactivarProfesional(profesional)">
+                  <mat-icon>block</mat-icon> Desactivar
+                </button>
+              </mat-menu>
+            </div>
+          </li>
+        } @empty {
+          <app-vacio
+            icono="stethoscope"
+            titulo="Sin profesionales"
+            texto="Sin profesionales activos los clientes no pueden agendar."
+          />
+        }
+      </ul>
+    }
+  </section>
+}

@@ -1,0 +1,50 @@
+<div class="bandeja" [class.bandeja--abierta]="abierta()">
+  <aside class="lista">
+    <h1>Mensajes</h1>
+    <app-carga [recurso]="conversaciones" />
+    @if (conversaciones.hasValue()) {
+      <nav aria-label="Conversaciones">
+        @for (conversacion of conversaciones.value(); track conversacion.id_usuario) {
+          <a
+            class="fila"
+            [routerLink]="[conversacion.id_usuario]"
+            routerLinkActive="fila--activa"
+            ariaCurrentWhenActive="page"
+          >
+            <span class="fila__avatar">{{ inicial(conversacion.nombre_usuario) }}</span>
+            <span class="fila__cuerpo">
+              <span class="fila__cabecera">
+                <strong>{{ conversacion.nombre_usuario }}</strong>
+                <small>{{ conversacion.fecha_ultimo_mensaje | date: 'd MMM' }}</small>
+              </span>
+              <span class="fila__ultimo">
+                @if (conversacion.enviado_por_mi) {
+                  Tú:
+                }
+                {{ conversacion.ultimo_mensaje }}
+              </span>
+            </span>
+            @if (conversacion.no_leidos > 0) {
+              <span class="fila__contador" [attr.aria-label]="conversacion.no_leidos + ' sin leer'">
+                {{ conversacion.no_leidos }}
+              </span>
+            }
+          </a>
+        } @empty {
+          <app-vacio
+            icono="chat"
+            titulo="Sin conversaciones"
+            texto="Escríbele a una veterinaria desde su página o desde una cita."
+          />
+        }
+      </nav>
+    }
+  </aside>
+
+  <section class="hilo">
+    @if (!abierta()) {
+      <app-vacio class="hilo__vacio" icono="forum" titulo="Elige una conversación" />
+    }
+    <router-outlet />
+  </section>
+</div>

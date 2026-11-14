@@ -1,0 +1,71 @@
+<app-marco-auth titulo="Crea tu cuenta" subtitulo="Empieza a organizar el cuidado de tus peludos.">
+  @if (error(); as mensaje) {
+    <p class="aviso aviso--error" role="alert">{{ mensaje }}</p>
+  }
+
+  <form class="formulario" [formGroup]="form" (ngSubmit)="enviar()" novalidate>
+    <mat-button-toggle-group
+      formControlName="rol"
+      aria-label="Tipo de cuenta"
+      hideSingleSelectionIndicator
+      style="width: 100%"
+    >
+      <mat-button-toggle value="cliente" style="flex: 1">Tengo mascotas</mat-button-toggle>
+      <mat-button-toggle value="veterinaria" style="flex: 1">Tengo una veterinaria</mat-button-toggle>
+    </mat-button-toggle-group>
+
+    <mat-form-field>
+      <mat-label>Nombre completo</mat-label>
+      <input matInput formControlName="nombre_completo" autocomplete="name" />
+      <mat-error>{{ mensajeDeCampo(form.controls.nombre_completo) }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Correo electrónico</mat-label>
+      <input matInput type="email" formControlName="correo_electronico" autocomplete="username" />
+      <mat-error>{{ mensajeDeCampo(form.controls.correo_electronico) }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Contraseña</mat-label>
+      <input
+        matInput
+        [type]="verContrasena() ? 'text' : 'password'"
+        formControlName="contrasena"
+        autocomplete="new-password"
+      />
+      <button
+        matIconButton
+        matSuffix
+        type="button"
+        [attr.aria-label]="verContrasena() ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+        (click)="verContrasena.set(!verContrasena())"
+      >
+        <mat-icon>{{ verContrasena() ? 'visibility_off' : 'visibility' }}</mat-icon>
+      </button>
+      <mat-hint>Mínimo 8 caracteres</mat-hint>
+      <mat-error>{{ mensajeDeCampo(form.controls.contrasena) }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Teléfono (opcional)</mat-label>
+      <input matInput type="tel" formControlName="telefono" autocomplete="tel" />
+      <mat-error>{{ mensajeDeCampo(form.controls.telefono) }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Dirección (opcional)</mat-label>
+      <input matInput formControlName="direccion" autocomplete="street-address" />
+      <mat-hint>Se usa para entregar tus pedidos</mat-hint>
+      <mat-error>{{ mensajeDeCampo(form.controls.direccion) }}</mat-error>
+    </mat-form-field>
+
+    <button matButton="filled" type="submit" [disabled]="enviando()">
+      {{ enviando() ? 'Creando cuenta…' : 'Crear cuenta' }}
+    </button>
+  </form>
+
+  <p style="margin-top: 20px; text-align: center">
+    ¿Ya tienes cuenta? <a routerLink="/login">Entra aquí</a>
+  </p>
+</app-marco-auth>

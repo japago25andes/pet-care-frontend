@@ -1,0 +1,25 @@
+<div class="marco">
+  <aside class="lateral">
+    <a routerLink="/" aria-label="Ir a la portada"><app-logo claro /></a>
+    <div>
+      <h2>Todo sobre tu mascota, en un solo lugar.</h2>
+      <ul>
+        @for (beneficio of beneficios; track beneficio.icono) {
+          <li>
+            <mat-icon>{{ beneficio.icono }}</mat-icon>
+            <span>{{ beneficio.texto }}</span>
+          </li>
+        }
+      </ul>
+    </div>
+  </aside>
+
+  <main class="contenido">
+    <div class="tarjeta">
+      <a class="logo-movil" routerLink="/" aria-label="Ir a la portada"><app-logo /></a>
+      <h1>{{ titulo() }}</h1>
+      <p class="subtitulo">{{ subtitulo() }}</p>
+      <ng-content />
+    </div>
+  </main>
+</div>

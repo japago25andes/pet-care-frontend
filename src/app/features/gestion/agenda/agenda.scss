@@ -1,0 +1,18 @@
+.filtro {
+  width: 220px;
+  --mat-form-field-outlined-container-color: #fff;
+}
+
+.dia {
+  margin-top: 12px;
+
+  h2 {
+    color: var(--pel-marino);
+    font-size: 15px;
+    font-weight: 800;
+
+    &::first-letter {
+      text-transform: uppercase;
+    }
+  }
+}

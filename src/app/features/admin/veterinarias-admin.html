@@ -1,0 +1,59 @@
+<div class="pagina-encabezado">
+  <h1 class="pagina-titulo">Veterinarias</h1>
+</div>
+
+<div class="filtros">
+  <mat-form-field class="filtros__texto" subscriptSizing="dynamic">
+    <mat-label>Buscar por nombre</mat-label>
+    <mat-icon matPrefix>search</mat-icon>
+    <input matInput [formControl]="busqueda" />
+  </mat-form-field>
+</div>
+
+<div class="progreso">
+  @if (resultado.isLoading() && veterinarias()) {
+    <mat-progress-bar mode="indeterminate" />
+  }
+</div>
+
+@if (!veterinarias() || resultado.error()) {
+  <app-carga [recurso]="resultado" />
+}
+
+@if (veterinarias(); as lista) {
+  <section class="caja">
+    @for (veterinaria of lista; track veterinaria.id_veterinaria) {
+      <div class="fila">
+        <div class="fila__datos">
+          <strong>
+            {{ veterinaria.nombre_comercial }}
+            @if (!veterinaria.activo) {
+              <app-etiqueta tono="error">Desactivada</app-etiqueta>
+            }
+          </strong>
+          <span>{{ veterinaria.direccion }}</span>
+          <span>Responsable: {{ veterinaria.nombre_responsable }} · {{ veterinaria.correo_responsable }}</span>
+        </div>
+        <div class="fila__acciones">
+          <app-calificacion [valor]="veterinaria.calificacion_promedio" />
+          @if (veterinaria.activo) {
+            <a matButton [routerLink]="['/veterinarias', veterinaria.id_veterinaria]">Ver</a>
+          }
+          <button matButton="outlined" type="button" (click)="cambiarEstado(veterinaria)">
+            {{ veterinaria.activo ? 'Desactivar' : 'Reactivar' }}
+          </button>
+        </div>
+      </div>
+    } @empty {
+      <app-vacio icono="local_hospital" titulo="No se encontraron veterinarias" />
+    }
+  </section>
+
+  @if (pagina() > 0 || hayMas()) {
+    <div class="paginas">
+      <button matButton type="button" [disabled]="pagina() === 0" (click)="pagina.set(pagina() - 1)">Anterior</button>
+      <span>Página {{ pagina() + 1 }}</span>
+      <button matButton type="button" [disabled]="!hayMas()" (click)="pagina.set(pagina() + 1)">Siguiente</button>
+    </div>
+  }
+}

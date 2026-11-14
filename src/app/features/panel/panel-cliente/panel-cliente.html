@@ -1,0 +1,111 @@
+<h1 class="pagina-titulo">Hola, {{ nombre() }}</h1>
+<p class="pagina-subtitulo">Esto es lo que tienes pendiente.</p>
+
+@if (noLeidos.hasValue() && noLeidos.value().total > 0) {
+  <a class="mensajes" routerLink="/mensajes">
+    <mat-icon>chat</mat-icon>
+    <span>
+      Tienes {{ noLeidos.value().total }}
+      {{ noLeidos.value().total === 1 ? 'mensaje sin leer' : 'mensajes sin leer' }}
+    </span>
+    <mat-icon>chevron_right</mat-icon>
+  </a>
+}
+
+<div class="columnas">
+  <div class="columna">
+    <section class="caja">
+      <h2>Recordatorios vencidos</h2>
+      <app-carga [recurso]="recordatorios" />
+      @if (recordatorios.hasValue()) {
+        @if (recordatorios.value().length === 0) {
+          <app-vacio icono="task_alt" titulo="Todo al día" />
+        } @else {
+          <ul class="registros">
+            @for (recordatorio of recordatorios.value(); track recordatorio.id_recordatorio) {
+              <li class="registro">
+                <mat-icon class="registro__icono">{{ icono(recordatorio.tipo) }}</mat-icon>
+                <div>
+                  <div class="registro__titulo">{{ recordatorio.titulo }}</div>
+                  <p class="registro__detalle">
+                    {{ nombreMascota(recordatorio.id_mascota) }} ·
+                    {{ recordatorio.fecha_programada | date: 'EEE d MMM, h:mm a' }}
+                  </p>
+                </div>
+                <div class="registro__acciones">
+                  <button matButton="tonal" type="button" (click)="marcarHecho(recordatorio)">Hecho</button>
+                </div>
+              </li>
+            }
+          </ul>
+        }
+      }
+    </section>
+
+    <section class="caja">
+      <h2>Próximas citas</h2>
+      <app-carga [recurso]="citas" />
+      @if (citas.hasValue()) {
+        @if (citas.value().length === 0) {
+          <app-vacio icono="event" titulo="No tienes citas próximas">
+            <a matButton="outlined" routerLink="/veterinarias">Buscar veterinaria</a>
+          </app-vacio>
+        } @else {
+          <ul class="registros">
+            @for (cita of citas.value(); track cita.id_cita) {
+              <li class="registro">
+                <div class="bloque-dia">
+                  <strong>{{ cita.fecha_cita | date: 'd' }}</strong>
+                  <span>{{ cita.fecha_cita | date: 'MMM' }}</span>
+                </div>
+                <div>
+                  <div class="registro__titulo">
+                    {{ cita.motivo }}
+                    <app-etiqueta [tono]="estado(cita.estado).tono">{{ estado(cita.estado).texto }}</app-etiqueta>
+                  </div>
+                  <p class="registro__detalle">
+                    {{ cita.nombre_mascota }} · {{ cita.fecha_cita | date: 'h:mm a' }} · {{ cita.nombre_profesional }},
+                    {{ cita.nombre_veterinaria }}
+                  </p>
+                </div>
+                <span></span>
+              </li>
+            }
+          </ul>
+        }
+      }
+    </section>
+  </div>
+
+  <section class="caja">
+    <div class="caja__cabecera">
+      <h2>Mis mascotas</h2>
+      <a matIconButton routerLink="/mascotas/nueva" aria-label="Agregar mascota"><mat-icon>add</mat-icon></a>
+    </div>
+    <app-carga [recurso]="mascotas" />
+    @if (mascotas.hasValue()) {
+      @if (mascotas.value().length === 0) {
+        <app-vacio icono="pets" titulo="Agrega tu primera mascota">
+          <a matButton="filled" routerLink="/mascotas/nueva">Agregar mascota</a>
+        </app-vacio>
+      } @else {
+        <div class="mascotas">
+          @for (mascota of mascotas.value(); track mascota.id_mascota) {
+            <a [routerLink]="['/mascotas', mascota.id_mascota]">
+              <app-avatar-mascota [foto]="mascota.foto_url" />
+              <span>
+                <strong>{{ mascota.nombre }}</strong>
+                <small>
+                  {{ mascota.raza ?? mascota.especie }}
+                  @if (mascota.fecha_nacimiento; as nacimiento) {
+                    · {{ edad(nacimiento) }}
+                  }
+                </small>
+              </span>
+            </a>
+          }
+        </div>
+      }
+    }
+  </section>
+</div>

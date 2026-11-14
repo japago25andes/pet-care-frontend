@@ -1,0 +1,44 @@
+<div class="pagina-encabezado">
+  <h1 class="pagina-titulo">Mis veterinarias</h1>
+  <button matButton="filled" type="button" (click)="registrar()">
+    <mat-icon>add</mat-icon>
+    Registrar veterinaria
+  </button>
+</div>
+
+<app-carga [recurso]="veterinarias" />
+
+@if (veterinarias.hasValue()) {
+  <div class="tarjetas">
+    @for (veterinaria of veterinarias.value(); track veterinaria.id_veterinaria) {
+      @if (veterinaria.activo) {
+        <a class="veterinaria" [routerLink]="[veterinaria.id_veterinaria]">
+          <div class="veterinaria__cabecera">
+            <strong>{{ veterinaria.nombre_comercial }}</strong>
+            <app-calificacion [valor]="veterinaria.calificacion_promedio" />
+          </div>
+          <p>{{ veterinaria.direccion }}</p>
+          <small>{{ veterinaria.telefono }}</small>
+        </a>
+      } @else {
+        <div class="veterinaria veterinaria--inactiva">
+          <div class="veterinaria__cabecera">
+            <strong>{{ veterinaria.nombre_comercial }}</strong>
+            <app-etiqueta>Desactivada</app-etiqueta>
+          </div>
+          <p>{{ veterinaria.direccion }}</p>
+          <small>Solo un administrador puede reactivarla.</small>
+        </div>
+      }
+    } @empty {
+      <app-vacio
+        class="caja"
+        icono="local_hospital"
+        titulo="Aún no tienes veterinarias"
+        texto="Registra la primera para publicar profesionales y productos."
+      >
+        <button matButton="filled" type="button" (click)="registrar()">Registrar veterinaria</button>
+      </app-vacio>
+    }
+  </div>
+}

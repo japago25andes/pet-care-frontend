@@ -1,0 +1,88 @@
+<div class="pagina-encabezado">
+  <div>
+    <h1 class="pagina-titulo">Veterinarias</h1>
+    <p class="pagina-subtitulo">Encuentra dónde atender a tu mascota.</p>
+  </div>
+</div>
+
+<div class="filtros">
+  <mat-form-field class="filtros__texto" subscriptSizing="dynamic">
+    <mat-label>Buscar por nombre</mat-label>
+    <mat-icon matPrefix>search</mat-icon>
+    <input matInput [formControl]="busqueda" />
+  </mat-form-field>
+
+  @if (ubicacion()) {
+    <mat-form-field class="filtros__radio" subscriptSizing="dynamic">
+      <mat-label>Distancia</mat-label>
+      <mat-select [value]="radio()" (valueChange)="cambiarRadio($event)">
+        @for (opcion of radios; track opcion) {
+          <mat-option [value]="opcion">{{ opcion }} km</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    <button matButton="outlined" type="button" (click)="quitarUbicacion()">
+      <mat-icon>location_off</mat-icon>
+      Ver todas
+    </button>
+  } @else {
+    <button matButton="tonal" type="button" [disabled]="ubicando()" (click)="usarMiUbicacion()">
+      <mat-icon>my_location</mat-icon>
+      {{ ubicando() ? 'Ubicando…' : 'Cerca de mí' }}
+    </button>
+  }
+</div>
+
+@if (errorUbicacion(); as mensaje) {
+  <p class="aviso aviso--error" role="alert">{{ mensaje }}</p>
+}
+
+<div class="resultados">
+  <div class="lista">
+    <div class="progreso">
+      @if (resultado.isLoading() && veterinarias()) {
+        <mat-progress-bar mode="indeterminate" />
+      }
+    </div>
+
+    @if (!veterinarias()) {
+      <app-carga [recurso]="resultado" />
+    } @else if (resultado.error()) {
+      <app-carga [recurso]="resultado" />
+    }
+
+    @if (veterinarias(); as lista) {
+      @for (veterinaria of lista; track veterinaria.id_veterinaria) {
+        <a class="veterinaria" [routerLink]="[veterinaria.id_veterinaria]">
+          <div class="veterinaria__cabecera">
+            <strong>{{ veterinaria.nombre_comercial }}</strong>
+            <app-calificacion [valor]="veterinaria.calificacion_promedio" />
+          </div>
+          <p>{{ veterinaria.direccion }}</p>
+          <small>
+            @if (veterinaria.distancia_km !== null && veterinaria.distancia_km !== undefined) {
+              <b>A {{ veterinaria.distancia_km | number: '1.1-1' }} km</b>
+              @if (veterinaria.horario_atencion) {
+                ·
+              }
+            }
+            {{ veterinaria.horario_atencion }}
+          </small>
+        </a>
+      } @empty {
+        <app-vacio
+          class="caja"
+          icono="location_searching"
+          titulo="No encontramos veterinarias"
+          [texto]="ubicacion() ? 'Prueba con una distancia mayor.' : 'Prueba con otro nombre.'"
+        />
+      }
+
+      @if (hayMas()) {
+        <button class="mas" matButton="outlined" type="button" (click)="cargarMas()">Cargar más</button>
+      }
+    }
+  </div>
+
+  <app-mapa class="mapa" [puntos]="puntos()" [ubicacion]="ubicacion()" />
+</div>

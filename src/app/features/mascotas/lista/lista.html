@@ -1,0 +1,43 @@
+<div class="pagina-encabezado">
+  <h1 class="pagina-titulo">Mis mascotas</h1>
+  <a matButton="filled" routerLink="nueva">
+    <mat-icon>add</mat-icon>
+    Agregar mascota
+  </a>
+</div>
+
+<app-carga [recurso]="mascotas" />
+
+@if (mascotas.hasValue()) {
+  @if (mascotas.value().length === 0) {
+    <app-vacio
+      class="caja"
+      icono="pets"
+      titulo="Todavía no tienes mascotas"
+      texto="Agrega la primera para llevar sus vacunas, medicamentos y recordatorios."
+    >
+      <a matButton="filled" routerLink="nueva">Agregar mascota</a>
+    </app-vacio>
+  } @else {
+    <div class="tarjetas">
+      @for (mascota of mascotas.value(); track mascota.id_mascota) {
+        <a class="mascota" [routerLink]="[mascota.id_mascota]">
+          <app-avatar-mascota [foto]="mascota.foto_url" [tamano]="64" />
+          <div class="mascota__datos">
+            <strong>{{ mascota.nombre }}</strong>
+            <span>
+              {{ mascota.raza ?? mascota.especie }}
+              @if (mascota.fecha_nacimiento; as nacimiento) {
+                · {{ edad(nacimiento) }}
+              }
+            </span>
+            @if (mascota.alergias || mascota.condiciones_medicas) {
+              <small><mat-icon inline>error</mat-icon> Tiene alertas de salud</small>
+            }
+          </div>
+          <mat-icon class="mascota__ir">chevron_right</mat-icon>
+        </a>
+      }
+    </div>
+  }
+}

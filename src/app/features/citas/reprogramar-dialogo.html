@@ -1,0 +1,33 @@
+<h2 mat-dialog-title>Reprogramar cita</h2>
+
+<form [formGroup]="form" (ngSubmit)="guardar()" novalidate>
+  <mat-dialog-content class="formulario">
+    <p class="pagina-subtitulo" style="margin: 0">
+      {{ cita.nombre_mascota }} con {{ cita.nombre_profesional }}. Si cambias la fecha, la veterinaria debe confirmarla
+      de nuevo.
+    </p>
+
+    @if (error(); as mensaje) {
+      <p class="aviso aviso--error" role="alert">{{ mensaje }}</p>
+    }
+
+    <mat-form-field>
+      <mat-label>Fecha y hora</mat-label>
+      <input matInput type="datetime-local" formControlName="fecha_cita" [min]="minimo" />
+      <mat-error>{{ mensajeDeCampo(form.controls.fecha_cita) }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Motivo</mat-label>
+      <input matInput formControlName="motivo" />
+      <mat-error>{{ mensajeDeCampo(form.controls.motivo) }}</mat-error>
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button matButton type="button" mat-dialog-close>Cancelar</button>
+    <button matButton="filled" type="submit" [disabled]="enviando()">
+      {{ enviando() ? 'Guardando…' : 'Guardar' }}
+    </button>
+  </mat-dialog-actions>
+</form>

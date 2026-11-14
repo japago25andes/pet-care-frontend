@@ -1,0 +1,271 @@
+@use '@angular/material' as mat;
+
+html {
+  color-scheme: light;
+
+  @include mat.theme(
+    (
+      color: mat.$azure-palette,
+      typography: 'Nunito Sans',
+      density: 0,
+    )
+  );
+
+  // Paleta de PeludOS. Se cambia aquí y aplica a toda la app.
+  --pel-marino: #0f2a4a;
+  --pel-azul: #1d5fbf;
+  --pel-azul-oscuro: #174c99;
+  --pel-celeste: #4fb3e8;
+  --pel-celeste-suave: #d8ecfa;
+  --pel-fondo: #eef5fc;
+  --pel-borde: #d5e3f2;
+  --pel-texto: #16283d;
+  --pel-texto-suave: #54687f;
+  --pel-exito: #1b7f5c;
+  --pel-alerta: #a86a12;
+  --pel-error: #b3261e;
+
+  // Material toma estos colores en todos sus componentes.
+  --mat-sys-primary: var(--pel-azul);
+  --mat-sys-on-primary: #fff;
+  --mat-sys-primary-container: var(--pel-celeste-suave);
+  --mat-sys-on-primary-container: var(--pel-marino);
+  --mat-sys-secondary: var(--pel-azul-oscuro);
+  --mat-sys-on-secondary: #fff;
+  --mat-sys-secondary-container: var(--pel-celeste-suave);
+  --mat-sys-on-secondary-container: var(--pel-marino);
+  --mat-sys-tertiary: var(--pel-celeste);
+  --mat-sys-background: var(--pel-fondo);
+  --mat-sys-on-background: var(--pel-texto);
+  --mat-sys-surface: #fff;
+  --mat-sys-on-surface: var(--pel-texto);
+  --mat-sys-on-surface-variant: var(--pel-texto-suave);
+  --mat-sys-surface-container-lowest: #fff;
+  --mat-sys-surface-container-low: #f7fafe;
+  --mat-sys-surface-container: #f1f6fc;
+  --mat-sys-surface-container-high: #e9f1fa;
+  --mat-sys-surface-container-highest: #e2ecf7;
+  --mat-sys-outline: #8aa0b8;
+  --mat-sys-outline-variant: var(--pel-borde);
+  --mat-sys-error: var(--pel-error);
+
+  // El rojo se reserva para estados: el contador del carrito va en azul.
+  --mat-badge-background-color: var(--pel-azul);
+  --mat-badge-text-color: #fff;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--pel-fondo);
+  color: var(--pel-texto);
+  font-family: 'Nunito Sans', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+a {
+  color: var(--pel-azul);
+}
+
+:focus-visible {
+  outline: 2px solid var(--pel-azul);
+  outline-offset: 2px;
+}
+
+.material-symbols-rounded {
+  font-family: 'Material Symbols Rounded';
+}
+
+// Formularios
+.formulario {
+  display: grid;
+  gap: 16px;
+
+  mat-form-field {
+    width: 100%;
+  }
+
+  button[type='submit'] {
+    height: 48px;
+  }
+}
+
+// Avisos en línea
+.aviso {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--pel-celeste-suave);
+  color: var(--pel-marino);
+  font-size: 14px;
+  line-height: 1.4;
+
+  &--error {
+    background: #fbe9e7;
+    color: var(--pel-error);
+  }
+}
+
+// Encabezado de cada página interna
+.pagina-titulo {
+  color: var(--pel-marino);
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.pagina-subtitulo {
+  margin-top: 4px;
+  color: var(--pel-texto-suave);
+}
+
+// Caja blanca para agrupar contenido
+.caja {
+  padding: 20px;
+  border: 1px solid var(--pel-borde);
+  border-radius: 16px;
+  background: #fff;
+}
+
+// Encabezado de página con acción a la derecha
+.pagina-encabezado {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.volver {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  margin-bottom: 12px;
+  color: var(--pel-texto-suave);
+  font-weight: 600;
+  text-decoration: none;
+
+  &:hover {
+    color: var(--pel-azul);
+  }
+}
+
+// Formularios a dos columnas
+.formulario--dos {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  .ancho {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 600px) {
+  .formulario--dos {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.mat-mdc-dialog-content.formulario {
+  padding-top: 8px !important;
+}
+
+// Listas de registros (vacunas, medicamentos, recordatorios)
+.registros {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.registro {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--pel-borde);
+
+  &:last-child {
+    border-bottom: 0;
+  }
+
+  &__icono {
+    color: var(--pel-azul);
+  }
+
+  &__titulo {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    color: var(--pel-marino);
+    font-weight: 700;
+  }
+
+  &__detalle {
+    margin-top: 2px;
+    color: var(--pel-texto-suave);
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  &__acciones {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.barra-seccion {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 4px;
+}
+
+// El área táctil de los botones de ícono no debe generar barra de desplazamiento en las pestañas
+.pestanas .mat-mdc-tab-body-content {
+  overflow: hidden;
+}
+
+// En celular las tres pestañas de la ficha caben sin flechas
+@media (max-width: 600px) {
+  .pestanas .mat-mdc-tab {
+    min-width: 0;
+    padding: 0 10px;
+  }
+}
+
+// Día y mes de una cita
+.bloque-dia {
+  display: grid;
+  justify-items: center;
+  width: 52px;
+  padding: 6px 0;
+  border-radius: 10px;
+  background: var(--pel-celeste-suave);
+  color: var(--pel-marino);
+  line-height: 1.1;
+
+  strong {
+    font-size: 20px;
+  }
+
+  span {
+    font-size: 12px;
+    text-transform: uppercase;
+  }
+}

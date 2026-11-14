@@ -1,0 +1,45 @@
+<header class="cabecera">
+  <a matIconButton class="cabecera__volver" routerLink="/mensajes" aria-label="Volver a conversaciones">
+    <mat-icon>chevron_left</mat-icon>
+  </a>
+  <h2>{{ titulo() }}</h2>
+</header>
+
+<div #lienzo class="mensajes">
+  <app-carga [recurso]="hilo" />
+  @if (hilo.hasValue()) {
+    @for (mensaje of hilo.value(); track mensaje.id_mensaje) {
+      @let mio = mensaje.id_usuario_remitente === miId();
+      <div class="burbuja" [class.burbuja--mia]="mio">
+        <p>{{ mensaje.contenido }}</p>
+        <small>
+          {{ mensaje.fecha_envio | date: 'd MMM, h:mm a' }}
+          @if (mio) {
+            <mat-icon inline [attr.aria-label]="mensaje.leido ? 'Leído' : 'Enviado'">
+              {{ mensaje.leido ? 'done_all' : 'done' }}
+            </mat-icon>
+          }
+        </small>
+      </div>
+    } @empty {
+      <app-vacio class="mensajes__vacio" icono="chat" titulo="Escribe el primer mensaje" />
+    }
+  }
+</div>
+
+<div class="redactar">
+  <mat-form-field subscriptSizing="dynamic">
+    <mat-label>Escribe un mensaje</mat-label>
+    <textarea
+      matInput
+      rows="1"
+      cdkTextareaAutosize
+      [formControl]="texto"
+      (keydown.enter)="alPresionarEnter($event)"
+    ></textarea>
+    <mat-error>{{ mensajeDeCampo(texto) }}</mat-error>
+  </mat-form-field>
+  <button matIconButton type="button" aria-label="Enviar mensaje" [disabled]="enviando()" (click)="enviar()">
+    <mat-icon>send</mat-icon>
+  </button>
+</div>

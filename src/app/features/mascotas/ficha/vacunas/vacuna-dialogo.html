@@ -1,0 +1,52 @@
+<h2 mat-dialog-title>{{ datos.vacuna ? 'Editar vacuna' : 'Registrar vacuna' }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="guardar()" novalidate>
+  <mat-dialog-content class="formulario formulario--dos">
+    @if (error(); as mensaje) {
+      <p class="aviso aviso--error ancho" role="alert">{{ mensaje }}</p>
+    }
+
+    <mat-form-field class="ancho">
+      <mat-label>Vacuna</mat-label>
+      <input matInput formControlName="nombre_vacuna" />
+      <mat-error>{{ mensajeDeCampo(form.controls.nombre_vacuna) }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Fecha de aplicación</mat-label>
+      <input matInput type="date" formControlName="fecha_aplicacion" [max]="hoy" />
+      <mat-error>{{ mensajeDeCampo(form.controls.fecha_aplicacion) }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Próxima dosis (opcional)</mat-label>
+      <input matInput type="date" formControlName="fecha_proxima_dosis" />
+      <mat-error>{{ mensajeDeCampo(form.controls.fecha_proxima_dosis) }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Número de dosis</mat-label>
+      <input matInput type="number" min="1" formControlName="numero_dosis" />
+      <mat-error>{{ mensajeDeCampo(form.controls.numero_dosis) }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Lote (opcional)</mat-label>
+      <input matInput formControlName="lote" />
+      <mat-error>{{ mensajeDeCampo(form.controls.lote) }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="ancho">
+      <mat-label>Veterinario (opcional)</mat-label>
+      <input matInput formControlName="veterinario_nombre" />
+      <mat-error>{{ mensajeDeCampo(form.controls.veterinario_nombre) }}</mat-error>
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button matButton type="button" mat-dialog-close>Cancelar</button>
+    <button matButton="filled" type="submit" [disabled]="enviando()">
+      {{ enviando() ? 'Guardando…' : 'Guardar' }}
+    </button>
+  </mat-dialog-actions>
+</form>

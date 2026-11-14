@@ -1,0 +1,59 @@
+@let datos = cita();
+
+<div class="cita">
+  <div class="cita__hora">{{ datos.fecha_cita | date: 'h:mm a' }}</div>
+  <div class="cita__cuerpo">
+    <div class="registro__titulo">
+      {{ datos.nombre_mascota }}
+      <small>{{ datos.especie_mascota }}</small>
+      <app-etiqueta [tono]="estado().tono">{{ estado().texto }}</app-etiqueta>
+    </div>
+    <p class="registro__detalle">{{ datos.motivo }}</p>
+    <p class="registro__detalle">
+      Dueño: {{ datos.nombre_dueno }} · {{ datos.nombre_profesional }}, {{ datos.nombre_veterinaria }}
+    </p>
+    @if (datos.alergias || datos.condiciones_medicas) {
+      <p class="cita__alerta">
+        <mat-icon inline>error</mat-icon>
+        @if (datos.alergias; as alergias) {
+          Alergias: {{ alergias }}.
+        }
+        @if (datos.condiciones_medicas; as condiciones) {
+          Condiciones: {{ condiciones }}.
+        }
+      </p>
+    }
+    @if (datos.notas; as notasCita) {
+      <p class="registro__detalle"><b>Notas:</b> {{ notasCita }}</p>
+    }
+  </div>
+
+  @if (activa()) {
+    <div class="cita__acciones">
+      @if (datos.estado === 'programada') {
+        <button matButton="tonal" type="button" (click)="cambiar('confirmada', 'Cita confirmada')">Confirmar</button>
+      } @else {
+        <button matButton="tonal" type="button" (click)="cambiar('completada', 'Cita completada')">Completar</button>
+      }
+      <button matIconButton type="button" aria-label="Más opciones" [matMenuTriggerFor]="opciones">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #opciones="matMenu" xPosition="before">
+        <button mat-menu-item (click)="notas()"><mat-icon>edit_note</mat-icon> Notas</button>
+        <a
+          mat-menu-item
+          [routerLink]="['/mensajes', datos.id_usuario_dueno]"
+          [queryParams]="{ nombre: datos.nombre_dueno, veterinaria: datos.id_veterinaria, cita: datos.id_cita }"
+        >
+          <mat-icon>chat</mat-icon> Escribir al dueño
+        </a>
+        @if (datos.estado === 'confirmada') {
+          <button mat-menu-item (click)="cambiar('no_asistio', 'Marcada como no asistió')">
+            <mat-icon>person_off</mat-icon> No asistió
+          </button>
+        }
+        <button mat-menu-item (click)="cancelar()"><mat-icon>event_busy</mat-icon> Cancelar</button>
+      </mat-menu>
+    </div>
+  }
+</div>

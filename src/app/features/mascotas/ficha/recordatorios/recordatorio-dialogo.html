@@ -1,0 +1,52 @@
+<h2 mat-dialog-title>{{ datos.recordatorio ? 'Editar recordatorio' : 'Crear recordatorio' }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="guardar()" novalidate>
+  <mat-dialog-content class="formulario formulario--dos">
+    @if (error(); as mensaje) {
+      <p class="aviso aviso--error ancho" role="alert">{{ mensaje }}</p>
+    }
+
+    <mat-form-field class="ancho">
+      <mat-label>Título</mat-label>
+      <input matInput formControlName="titulo" />
+      <mat-error>{{ mensajeDeCampo(form.controls.titulo) }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Tipo</mat-label>
+      <mat-select formControlName="tipo">
+        @for (tipo of tipos; track tipo.valor) {
+          <mat-option [value]="tipo.valor">{{ tipo.texto }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Se repite</mat-label>
+      <mat-select formControlName="frecuencia">
+        @for (frecuencia of frecuencias; track frecuencia.valor) {
+          <mat-option [value]="frecuencia.valor">{{ frecuencia.texto }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="ancho">
+      <mat-label>Fecha y hora</mat-label>
+      <input matInput type="datetime-local" formControlName="fecha_programada" />
+      <mat-error>{{ mensajeDeCampo(form.controls.fecha_programada) }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="ancho">
+      <mat-label>Descripción (opcional)</mat-label>
+      <textarea matInput rows="2" formControlName="descripcion"></textarea>
+      <mat-error>{{ mensajeDeCampo(form.controls.descripcion) }}</mat-error>
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button matButton type="button" mat-dialog-close>Cancelar</button>
+    <button matButton="filled" type="submit" [disabled]="enviando()">
+      {{ enviando() ? 'Guardando…' : 'Guardar' }}
+    </button>
+  </mat-dialog-actions>
+</form>

@@ -1,0 +1,21 @@
+@switch (auth.rol()) {
+  @case ('cliente') {
+    <app-panel-cliente />
+  }
+  @case ('veterinaria') {
+    <app-panel-veterinaria />
+  }
+  @default {
+    <h1 class="pagina-titulo">Hola, {{ nombre() }}</h1>
+    <p class="pagina-subtitulo">¿Qué quieres hacer hoy?</p>
+
+    <nav class="accesos" aria-label="Accesos rápidos">
+      @for (acceso of accesos(); track acceso.ruta) {
+        <a [routerLink]="acceso.ruta">
+          <mat-icon>{{ acceso.icono }}</mat-icon>
+          <span>{{ acceso.etiqueta }}</span>
+        </a>
+      }
+    </nav>
+  }
+}

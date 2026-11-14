@@ -1,0 +1,46 @@
+<app-carga [recurso]="vacunas" />
+
+@if (vacunas.hasValue()) {
+  @if (vacunas.value().length === 0) {
+    <app-vacio icono="vaccines" titulo="Sin vacunas registradas" texto="Lleva aquí su carné de vacunación.">
+      <button matButton="filled" type="button" (click)="abrir()">Registrar vacuna</button>
+    </app-vacio>
+  } @else {
+    <div class="barra-seccion">
+      <button matButton type="button" (click)="abrir()"><mat-icon>add</mat-icon> Registrar vacuna</button>
+    </div>
+    <ul class="registros">
+      @for (vacuna of vacunas.value(); track vacuna.id_vacuna) {
+        <li class="registro">
+          <mat-icon class="registro__icono">vaccines</mat-icon>
+          <div>
+            <div class="registro__titulo">
+              {{ vacuna.nombre_vacuna }}
+              @if (estado(vacuna); as e) {
+                <app-etiqueta [tono]="e.tono">{{ e.texto }}</app-etiqueta>
+              }
+            </div>
+            <p class="registro__detalle">
+              Dosis {{ vacuna.numero_dosis }} · Aplicada el {{ vacuna.fecha_aplicacion | date: 'd MMM y' }}
+              @if (vacuna.fecha_proxima_dosis; as proxima) {
+                · Próxima: {{ proxima | date: 'd MMM y' }}
+              }
+            </p>
+            @if (aplicadoPor(vacuna); as detalle) {
+              <p class="registro__detalle">{{ detalle }}</p>
+            }
+          </div>
+          <div class="registro__acciones">
+            <button matIconButton type="button" aria-label="Más opciones" [matMenuTriggerFor]="opciones">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #opciones="matMenu" xPosition="before">
+              <button mat-menu-item (click)="abrir(vacuna)"><mat-icon>edit</mat-icon> Editar</button>
+              <button mat-menu-item (click)="eliminar(vacuna)"><mat-icon>delete</mat-icon> Eliminar</button>
+            </mat-menu>
+          </div>
+        </li>
+      }
+    </ul>
+  }
+}

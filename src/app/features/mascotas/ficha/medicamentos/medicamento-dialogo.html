@@ -1,0 +1,58 @@
+<h2 mat-dialog-title>{{ datos.medicamento ? 'Editar medicamento' : 'Agregar medicamento' }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="guardar()" novalidate>
+  <mat-dialog-content class="formulario formulario--dos">
+    @if (error(); as mensaje) {
+      <p class="aviso aviso--error ancho" role="alert">{{ mensaje }}</p>
+    }
+
+    <mat-form-field class="ancho">
+      <mat-label>Medicamento</mat-label>
+      <input matInput formControlName="nombre_medicamento" />
+      <mat-error>{{ mensajeDeCampo(form.controls.nombre_medicamento) }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Dosis (opcional)</mat-label>
+      <input matInput formControlName="dosis" placeholder="250" />
+      <mat-error>{{ mensajeDeCampo(form.controls.dosis) }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Unidad (opcional)</mat-label>
+      <input matInput formControlName="unidad_medida" placeholder="mg" />
+      <mat-error>{{ mensajeDeCampo(form.controls.unidad_medida) }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="ancho">
+      <mat-label>Frecuencia (opcional)</mat-label>
+      <input matInput formControlName="frecuencia_administracion" placeholder="Cada 12 horas" />
+      <mat-error>{{ mensajeDeCampo(form.controls.frecuencia_administracion) }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Inicio</mat-label>
+      <input matInput type="date" formControlName="fecha_inicio" />
+      <mat-error>{{ mensajeDeCampo(form.controls.fecha_inicio) }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Fin (opcional)</mat-label>
+      <input matInput type="date" formControlName="fecha_fin" />
+      <mat-error>{{ mensajeDeCampo(form.controls.fecha_fin) }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="ancho">
+      <mat-label>Observaciones (opcional)</mat-label>
+      <textarea matInput rows="2" formControlName="observaciones"></textarea>
+      <mat-error>{{ mensajeDeCampo(form.controls.observaciones) }}</mat-error>
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button matButton type="button" mat-dialog-close>Cancelar</button>
+    <button matButton="filled" type="submit" [disabled]="enviando()">
+      {{ enviando() ? 'Guardando…' : 'Guardar' }}
+    </button>
+  </mat-dialog-actions>
+</form>

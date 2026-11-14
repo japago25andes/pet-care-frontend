@@ -1,0 +1,51 @@
+@let datos = pedido();
+
+<article class="caja pedido">
+  <header>
+    <div>
+      <h2>Pedido #{{ datos.id_pedido }}</h2>
+      <small>
+        {{ vistaVeterinaria() ? datos.nombre_comprador + ' · ' + datos.nombre_veterinaria : datos.nombre_veterinaria }}
+        · {{ datos.fecha_pedido | date: 'd MMM y, h:mm a' }}
+      </small>
+    </div>
+    <app-etiqueta [tono]="estado().tono">{{ estado().texto }}</app-etiqueta>
+  </header>
+
+  <ul>
+    @for (item of datos.detalles; track item.id_producto) {
+      <li>
+        <span>{{ item.cantidad }} × {{ item.nombre_producto }}</span>
+        <span>{{ item.subtotal | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</span>
+      </li>
+    }
+  </ul>
+
+  <dl>
+    <div>
+      <dt>Entrega</dt>
+      <dd>{{ datos.direccion_entrega }}</dd>
+    </div>
+    <div>
+      <dt>Pago</dt>
+      <dd>{{ metodoPago(datos.metodo_pago) }}</dd>
+    </div>
+    @if (datos.fecha_entrega; as entrega) {
+      <div>
+        <dt>Entregado</dt>
+        <dd>{{ entrega | date: 'd MMM y' }}</dd>
+      </div>
+    }
+    @if (datos.notas; as notas) {
+      <div>
+        <dt>Notas</dt>
+        <dd>{{ notas }}</dd>
+      </div>
+    }
+  </dl>
+
+  <footer>
+    <strong>Total: {{ datos.total | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</strong>
+    <div class="acciones"><ng-content /></div>
+  </footer>
+</article>

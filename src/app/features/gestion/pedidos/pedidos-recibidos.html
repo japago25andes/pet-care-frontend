@@ -1,0 +1,48 @@
+<div class="pagina-encabezado">
+  <h1 class="pagina-titulo">Pedidos recibidos</h1>
+  <mat-form-field class="filtro" subscriptSizing="dynamic">
+    <mat-label>Estado</mat-label>
+    <mat-select [value]="filtro()" (valueChange)="filtro.set($event)">
+      <mat-option [value]="null">Todos</mat-option>
+      @for (opcion of estados; track opcion.valor) {
+        <mat-option [value]="opcion.valor">{{ opcion.texto }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</div>
+
+@if (!pedidos() || resultado.error()) {
+  <app-carga [recurso]="resultado" />
+}
+
+@if (pedidos(); as lista) {
+  @for (pedido of lista; track pedido.id_pedido) {
+    <app-tarjeta-pedido [pedido]="pedido" vistaVeterinaria>
+      @switch (pedido.estado_pedido) {
+        @case ('pendiente') {
+          <button matButton="outlined" type="button" (click)="cancelar(pedido)">Cancelar</button>
+          <button matButton="filled" type="button" (click)="cambiar(pedido, 'confirmado', 'Pedido confirmado')">
+            Confirmar
+          </button>
+        }
+        @case ('confirmado') {
+          <button matButton="outlined" type="button" (click)="cancelar(pedido)">Cancelar</button>
+          <button matButton="filled" type="button" (click)="cambiar(pedido, 'enviado', 'Pedido marcado como enviado')">
+            Marcar enviado
+          </button>
+        }
+        @case ('enviado') {
+          <button matButton="filled" type="button" (click)="cambiar(pedido, 'entregado', 'Pedido entregado')">
+            Marcar entregado
+          </button>
+        }
+      }
+    </app-tarjeta-pedido>
+  } @empty {
+    <app-vacio
+      class="caja"
+      icono="receipt_long"
+      [titulo]="filtro() ? 'No hay pedidos en este estado' : 'Todavía no has recibido pedidos'"
+    />
+  }
+}

@@ -1,0 +1,92 @@
+.marco {
+  display: grid;
+  grid-template-columns: minmax(320px, 5fr) 7fr;
+  min-height: 100dvh;
+}
+
+.lateral {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 40px 48px;
+  background: var(--pel-marino);
+  color: #fff;
+
+  a {
+    text-decoration: none;
+  }
+
+  h2 {
+    max-width: 380px;
+    font-size: 34px;
+    font-weight: 800;
+    line-height: 1.15;
+  }
+
+  ul {
+    display: grid;
+    gap: 16px;
+    margin: 32px 0 24px;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    color: #d6e4f3;
+    line-height: 1.35;
+  }
+
+  mat-icon {
+    flex: none;
+    color: var(--pel-celeste);
+  }
+}
+
+.contenido {
+  display: grid;
+  place-items: center;
+  padding: 32px 16px;
+}
+
+.tarjeta {
+  width: 100%;
+  max-width: 440px;
+
+  h1 {
+    color: var(--pel-marino);
+    font-size: 28px;
+    font-weight: 800;
+  }
+}
+
+.subtitulo {
+  margin: 4px 0 24px;
+  color: var(--pel-texto-suave);
+}
+
+.logo-movil {
+  display: none;
+  margin-bottom: 24px;
+  text-decoration: none;
+}
+
+@media (max-width: 860px) {
+  .marco {
+    grid-template-columns: 1fr;
+  }
+
+  .lateral {
+    display: none;
+  }
+
+  .contenido {
+    align-items: start;
+  }
+
+  .logo-movil {
+    display: inline-block;
+  }
+}

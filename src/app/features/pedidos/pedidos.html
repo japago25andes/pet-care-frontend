@@ -1,0 +1,39 @@
+<div class="pagina-encabezado">
+  <h1 class="pagina-titulo">Mis pedidos</h1>
+  <mat-form-field class="filtro" subscriptSizing="dynamic">
+    <mat-label>Estado</mat-label>
+    <mat-select [value]="filtro()" (valueChange)="filtro.set($event)">
+      <mat-option [value]="null">Todos</mat-option>
+      @for (opcion of estados; track opcion.valor) {
+        <mat-option [value]="opcion.valor">{{ opcion.texto }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</div>
+
+@if (!pedidos() || resultado.error()) {
+  <app-carga [recurso]="resultado" />
+}
+
+@if (pedidos(); as lista) {
+  @for (pedido of lista; track pedido.id_pedido) {
+    <app-tarjeta-pedido [pedido]="pedido">
+      @if (pedido.estado_pedido === 'pendiente') {
+        <button matButton="outlined" type="button" (click)="cancelar(pedido)">Cancelar pedido</button>
+      }
+      @if (pedido.estado_pedido === 'entregado') {
+        <button matButton="tonal" type="button" (click)="calificar(pedido)">Calificar</button>
+      }
+    </app-tarjeta-pedido>
+  } @empty {
+    <app-vacio
+      class="caja"
+      icono="receipt_long"
+      [titulo]="filtro() ? 'No tienes pedidos en este estado' : 'Todavía no tienes pedidos'"
+    >
+      @if (!filtro()) {
+        <a matButton="filled" routerLink="/tienda">Ir a la tienda</a>
+      }
+    </app-vacio>
+  }
+}

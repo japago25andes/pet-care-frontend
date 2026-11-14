@@ -1,0 +1,44 @@
+<app-marco-auth titulo="Hola de nuevo" subtitulo="Entra a tu cuenta de PeludOS.">
+  @if (expirada()) {
+    <p class="aviso">Tu sesión expiró. Vuelve a entrar para continuar.</p>
+  }
+  @if (error(); as mensaje) {
+    <p class="aviso aviso--error" role="alert">{{ mensaje }}</p>
+  }
+
+  <form class="formulario" [formGroup]="form" (ngSubmit)="enviar()" novalidate>
+    <mat-form-field>
+      <mat-label>Correo electrónico</mat-label>
+      <input matInput type="email" formControlName="correo" autocomplete="username" />
+      <mat-error>{{ mensajeDeCampo(form.controls.correo) }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Contraseña</mat-label>
+      <input
+        matInput
+        [type]="verContrasena() ? 'text' : 'password'"
+        formControlName="contrasena"
+        autocomplete="current-password"
+      />
+      <button
+        matIconButton
+        matSuffix
+        type="button"
+        [attr.aria-label]="verContrasena() ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+        (click)="verContrasena.set(!verContrasena())"
+      >
+        <mat-icon>{{ verContrasena() ? 'visibility_off' : 'visibility' }}</mat-icon>
+      </button>
+      <mat-error>{{ mensajeDeCampo(form.controls.contrasena) }}</mat-error>
+    </mat-form-field>
+
+    <button matButton="filled" type="submit" [disabled]="enviando()">
+      {{ enviando() ? 'Entrando…' : 'Entrar' }}
+    </button>
+  </form>
+
+  <p style="margin-top: 20px; text-align: center">
+    ¿No tienes cuenta? <a routerLink="/registro">Crea una</a>
+  </p>
+</app-marco-auth>

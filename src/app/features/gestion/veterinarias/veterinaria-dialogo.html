@@ -1,0 +1,65 @@
+<h2 mat-dialog-title>{{ veterinaria ? 'Editar veterinaria' : 'Registrar veterinaria' }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="guardar()" novalidate>
+  <mat-dialog-content class="formulario formulario--dos">
+    @if (error(); as mensaje) {
+      <p class="aviso aviso--error ancho" role="alert">{{ mensaje }}</p>
+    }
+
+    <mat-form-field class="ancho">
+      <mat-label>Nombre comercial</mat-label>
+      <input matInput formControlName="nombre_comercial" />
+      <mat-error>{{ mensajeDeCampo(form.controls.nombre_comercial) }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="ancho">
+      <mat-label>Dirección</mat-label>
+      <input matInput formControlName="direccion" />
+      <mat-error>{{ mensajeDeCampo(form.controls.direccion) }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Teléfono</mat-label>
+      <input matInput type="tel" formControlName="telefono" />
+      <mat-error>{{ mensajeDeCampo(form.controls.telefono) }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Correo (opcional)</mat-label>
+      <input matInput type="email" formControlName="correo_electronico" />
+      <mat-error>{{ mensajeDeCampo(form.controls.correo_electronico) }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="ancho">
+      <mat-label>Horario de atención (opcional)</mat-label>
+      <input matInput formControlName="horario_atencion" placeholder="Lun-Sáb 8:00-18:00" />
+      <mat-error>{{ mensajeDeCampo(form.controls.horario_atencion) }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Latitud (opcional)</mat-label>
+      <input matInput type="number" step="any" formControlName="latitud" />
+      <mat-error>{{ mensajeDeCampo(form.controls.latitud) }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Longitud (opcional)</mat-label>
+      <input matInput type="number" step="any" formControlName="longitud" />
+      <mat-error>{{ mensajeDeCampo(form.controls.longitud) }}</mat-error>
+    </mat-form-field>
+
+    <div class="ancho">
+      <button matButton type="button" [disabled]="ubicando()" (click)="usarMiUbicacion()">
+        <mat-icon>my_location</mat-icon>
+        {{ ubicando() ? 'Ubicando…' : 'Usar mi ubicación actual' }}
+      </button>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button matButton type="button" mat-dialog-close>Cancelar</button>
+    <button matButton="filled" type="submit" [disabled]="enviando()">
+      {{ enviando() ? 'Guardando…' : 'Guardar' }}
+    </button>
+  </mat-dialog-actions>
+</form>

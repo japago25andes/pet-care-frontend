@@ -1,0 +1,12 @@
+services:
+  web:
+    build: .
+    container_name: peludos_web
+    restart: always
+    environment:
+      # Dónde escucha el back. nginx reenvía /api a esta dirección
+      API_TARGET: ${API_TARGET:-http://host.docker.internal:8001}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "${WEB_PORT:-80}:80"

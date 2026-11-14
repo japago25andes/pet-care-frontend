@@ -1,0 +1,61 @@
+<a class="volver" routerLink="/mascotas">
+  <mat-icon>chevron_left</mat-icon>
+  Mis mascotas
+</a>
+
+<app-carga [recurso]="mascota" />
+
+@if (mascota.hasValue()) {
+  @let datos = mascota.value();
+
+  <section class="caja cabecera">
+    <app-avatar-mascota [foto]="datos.foto_url" [tamano]="88" />
+    <div class="cabecera__datos">
+      <h1 class="pagina-titulo">{{ datos.nombre }}</h1>
+      <p class="cabecera__descripcion">{{ descripcion() }}</p>
+      <dl>
+        @if (datos.peso_kg !== null) {
+          <div>
+            <dt>Peso</dt>
+            <dd>{{ datos.peso_kg | number: '1.0-2' }} kg</dd>
+          </div>
+        }
+        @if (datos.color_mascota) {
+          <div>
+            <dt>Color</dt>
+            <dd>{{ datos.color_mascota }}</dd>
+          </div>
+        }
+        @if (datos.numero_chip) {
+          <div>
+            <dt>Chip</dt>
+            <dd>{{ datos.numero_chip }}</dd>
+          </div>
+        }
+      </dl>
+    </div>
+    <div class="cabecera__acciones">
+      <a matButton="outlined" routerLink="editar">Editar</a>
+      <button matIconButton type="button" aria-label="Eliminar mascota" (click)="eliminar()">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  </section>
+
+  @if (datos.alergias || datos.condiciones_medicas) {
+    <section class="alertas" aria-label="Alertas de salud">
+      @if (datos.alergias; as alergias) {
+        <p><mat-icon>error</mat-icon> <span><strong>Alergias:</strong> {{ alergias }}</span></p>
+      }
+      @if (datos.condiciones_medicas; as condiciones) {
+        <p><mat-icon>monitor_heart</mat-icon> <span><strong>Condiciones:</strong> {{ condiciones }}</span></p>
+      }
+    </section>
+  }
+
+  <mat-tab-group class="caja pestanas" mat-stretch-tabs="false" animationDuration="150ms">
+    <mat-tab label="Vacunas"><app-ficha-vacunas [idMascota]="id()" /></mat-tab>
+    <mat-tab label="Medicamentos"><app-ficha-medicamentos [idMascota]="id()" /></mat-tab>
+    <mat-tab label="Recordatorios"><app-ficha-recordatorios [idMascota]="id()" /></mat-tab>
+  </mat-tab-group>
+}

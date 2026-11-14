@@ -1,0 +1,44 @@
+<app-carga [recurso]="recordatorios" />
+
+@if (recordatorios.hasValue()) {
+  @if (recordatorios.value().length === 0) {
+    <app-vacio icono="notifications" titulo="Sin recordatorios" texto="Crea avisos únicos o que se repitan.">
+      <button matButton="filled" type="button" (click)="abrir()">Crear recordatorio</button>
+    </app-vacio>
+  } @else {
+    <div class="barra-seccion">
+      <button matButton type="button" (click)="abrir()"><mat-icon>add</mat-icon> Crear recordatorio</button>
+    </div>
+    <ul class="registros">
+      @for (recordatorio of recordatorios.value(); track recordatorio.id_recordatorio) {
+        <li class="registro">
+          <mat-icon class="registro__icono">{{ icono(recordatorio.tipo) }}</mat-icon>
+          <div>
+            <div class="registro__titulo">
+              {{ recordatorio.titulo }}
+              <app-etiqueta [tono]="estado(recordatorio).tono">{{ estado(recordatorio).texto }}</app-etiqueta>
+            </div>
+            <p class="registro__detalle">
+              {{ recordatorio.fecha_programada | date: 'EEE d MMM y, h:mm a' }} · {{ frecuencia(recordatorio.frecuencia) }}
+            </p>
+            @if (recordatorio.descripcion; as descripcion) {
+              <p class="registro__detalle">{{ descripcion }}</p>
+            }
+          </div>
+          <div class="registro__acciones">
+            @if (vencido(recordatorio)) {
+              <button matButton type="button" (click)="marcarHecho(recordatorio)">Hecho</button>
+            }
+            <button matIconButton type="button" aria-label="Más opciones" [matMenuTriggerFor]="opciones">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #opciones="matMenu" xPosition="before">
+              <button mat-menu-item (click)="abrir(recordatorio)"><mat-icon>edit</mat-icon> Editar</button>
+              <button mat-menu-item (click)="eliminar(recordatorio)"><mat-icon>delete</mat-icon> Eliminar</button>
+            </mat-menu>
+          </div>
+        </li>
+      }
+    </ul>
+  }
+}

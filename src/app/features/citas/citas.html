@@ -1,0 +1,78 @@
+<div class="pagina-encabezado">
+  <h1 class="pagina-titulo">Citas</h1>
+  <a matButton="filled" routerLink="/veterinarias">
+    <mat-icon>add</mat-icon>
+    Agendar cita
+  </a>
+</div>
+
+<app-carga [recurso]="citas" />
+
+<ng-template #fila let-cita let-acciones="acciones">
+  <li class="registro">
+    <div class="bloque-dia">
+      <strong>{{ cita.fecha_cita | date: 'd' }}</strong>
+      <span>{{ cita.fecha_cita | date: 'MMM' }}</span>
+    </div>
+    <div>
+      <div class="registro__titulo">
+        {{ cita.motivo }}
+        <app-etiqueta [tono]="estado(cita.estado).tono">{{ estado(cita.estado).texto }}</app-etiqueta>
+      </div>
+      <p class="registro__detalle">
+        {{ cita.nombre_mascota }} · {{ cita.fecha_cita | date: 'EEE d MMM y, h:mm a' }}
+      </p>
+      <p class="registro__detalle">{{ cita.nombre_profesional }}, {{ cita.nombre_veterinaria }}</p>
+      @if (cita.notas) {
+        <p class="registro__detalle"><b>Notas de la veterinaria:</b> {{ cita.notas }}</p>
+      }
+    </div>
+    <div class="registro__acciones">
+      @if (acciones) {
+        <button matIconButton type="button" aria-label="Más opciones" [matMenuTriggerFor]="opciones">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #opciones="matMenu" xPosition="before">
+          <a
+            mat-menu-item
+            [routerLink]="['/mensajes', cita.id_usuario_veterinaria]"
+            [queryParams]="{ nombre: cita.nombre_veterinaria, veterinaria: cita.id_veterinaria, cita: cita.id_cita }"
+          >
+            <mat-icon>chat</mat-icon> Escribir a la veterinaria
+          </a>
+          <button mat-menu-item (click)="reprogramar(cita)"><mat-icon>edit_calendar</mat-icon> Reprogramar</button>
+          <button mat-menu-item (click)="cancelar(cita)"><mat-icon>event_busy</mat-icon> Cancelar</button>
+        </mat-menu>
+      }
+    </div>
+  </li>
+</ng-template>
+
+@if (citas.hasValue()) {
+  <mat-tab-group class="caja pestanas" mat-stretch-tabs="false" animationDuration="150ms">
+    <mat-tab [label]="'Próximas (' + proximas().length + ')'">
+      @if (proximas().length === 0) {
+        <app-vacio icono="event" titulo="No tienes citas próximas" texto="Busca una veterinaria y agenda con un profesional.">
+          <a matButton="filled" routerLink="/veterinarias">Buscar veterinaria</a>
+        </app-vacio>
+      } @else {
+        <ul class="registros">
+          @for (cita of proximas(); track cita.id_cita) {
+            <ng-container *ngTemplateOutlet="fila; context: { $implicit: cita, acciones: true }" />
+          }
+        </ul>
+      }
+    </mat-tab>
+    <mat-tab label="Historial">
+      @if (historial().length === 0) {
+        <app-vacio icono="history" titulo="Aún no hay citas pasadas" />
+      } @else {
+        <ul class="registros">
+          @for (cita of historial(); track cita.id_cita) {
+            <ng-container *ngTemplateOutlet="fila; context: { $implicit: cita, acciones: false }" />
+          }
+        </ul>
+      }
+    </mat-tab>
+  </mat-tab-group>
+}

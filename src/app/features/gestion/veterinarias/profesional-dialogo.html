@@ -1,0 +1,46 @@
+<h2 mat-dialog-title>{{ datos.profesional ? 'Editar profesional' : 'Agregar profesional' }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="guardar()" novalidate>
+  <mat-dialog-content class="formulario formulario--dos">
+    @if (error(); as mensaje) {
+      <p class="aviso aviso--error ancho" role="alert">{{ mensaje }}</p>
+    }
+
+    <mat-form-field class="ancho">
+      <mat-label>Nombre completo</mat-label>
+      <input matInput formControlName="nombre_completo" />
+      <mat-error>{{ mensajeDeCampo(form.controls.nombre_completo) }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Especialidad (opcional)</mat-label>
+      <input matInput formControlName="especialidad" />
+      <mat-error>{{ mensajeDeCampo(form.controls.especialidad) }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Registro profesional (opcional)</mat-label>
+      <input matInput formControlName="numero_registro_profesional" />
+      <mat-error>{{ mensajeDeCampo(form.controls.numero_registro_profesional) }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Teléfono (opcional)</mat-label>
+      <input matInput type="tel" formControlName="telefono" />
+      <mat-error>{{ mensajeDeCampo(form.controls.telefono) }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Correo (opcional)</mat-label>
+      <input matInput type="email" formControlName="correo_electronico" />
+      <mat-error>{{ mensajeDeCampo(form.controls.correo_electronico) }}</mat-error>
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button matButton type="button" mat-dialog-close>Cancelar</button>
+    <button matButton="filled" type="submit" [disabled]="enviando()">
+      {{ enviando() ? 'Guardando…' : 'Guardar' }}
+    </button>
+  </mat-dialog-actions>
+</form>

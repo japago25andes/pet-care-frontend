@@ -1,0 +1,54 @@
+<h2 mat-dialog-title>Agendar cita</h2>
+
+<app-carga [recurso]="mascotas" />
+
+@if (mascotas.hasValue()) {
+  @if (mascotas.value().length === 0) {
+    <mat-dialog-content>Primero agrega una mascota para poder agendarle una cita.</mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button matButton type="button" mat-dialog-close>Cancelar</button>
+      <a matButton="filled" routerLink="/mascotas/nueva" (click)="cerrar()">Agregar mascota</a>
+    </mat-dialog-actions>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="guardar()" novalidate>
+      <mat-dialog-content class="formulario">
+        <p class="pagina-subtitulo" style="margin: 0">
+          Con {{ datos.profesional.nombre_completo }}, en {{ datos.nombreVeterinaria }}
+        </p>
+
+        @if (error(); as mensaje) {
+          <p class="aviso aviso--error" role="alert">{{ mensaje }}</p>
+        }
+
+        <mat-form-field>
+          <mat-label>Mascota</mat-label>
+          <mat-select formControlName="id_mascota">
+            @for (mascota of mascotas.value(); track mascota.id_mascota) {
+              <mat-option [value]="mascota.id_mascota">{{ mascota.nombre }}</mat-option>
+            }
+          </mat-select>
+          <mat-error>{{ mensajeDeCampo(form.controls.id_mascota) }}</mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Fecha y hora</mat-label>
+          <input matInput type="datetime-local" formControlName="fecha_cita" [min]="minimo" />
+          <mat-error>{{ mensajeDeCampo(form.controls.fecha_cita) }}</mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Motivo</mat-label>
+          <input matInput formControlName="motivo" placeholder="Control anual" />
+          <mat-error>{{ mensajeDeCampo(form.controls.motivo) }}</mat-error>
+        </mat-form-field>
+      </mat-dialog-content>
+
+      <mat-dialog-actions align="end">
+        <button matButton type="button" mat-dialog-close>Cancelar</button>
+        <button matButton="filled" type="submit" [disabled]="enviando()">
+          {{ enviando() ? 'Agendando…' : 'Agendar' }}
+        </button>
+      </mat-dialog-actions>
+    </form>
+  }
+}

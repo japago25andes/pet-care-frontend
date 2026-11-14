@@ -1,0 +1,120 @@
+<a class="volver" routerLink="/veterinarias">
+  <mat-icon>chevron_left</mat-icon>
+  Veterinarias
+</a>
+
+<app-carga [recurso]="veterinaria" />
+
+@if (veterinaria.hasValue()) {
+  @let datos = veterinaria.value();
+
+  <section class="caja cabecera">
+    <div class="cabecera__titulo">
+      <div>
+        <h1 class="pagina-titulo">{{ datos.nombre_comercial }}</h1>
+        <app-calificacion [valor]="datos.calificacion_promedio" />
+      </div>
+      @if (puedeAgendar()) {
+        <a
+          matButton="outlined"
+          [routerLink]="['/mensajes', datos.id_usuario]"
+          [queryParams]="{ nombre: datos.nombre_comercial, veterinaria: datos.id_veterinaria }"
+        >
+          <mat-icon>chat</mat-icon>
+          Enviar mensaje
+        </a>
+      }
+    </div>
+    <ul>
+      <li><mat-icon>location_on</mat-icon> {{ datos.direccion }}</li>
+      <li>
+        <mat-icon>call</mat-icon>
+        <a [href]="'tel:' + datos.telefono">{{ datos.telefono }}</a>
+      </li>
+      @if (datos.horario_atencion; as horario) {
+        <li><mat-icon>schedule</mat-icon> {{ horario }}</li>
+      }
+      <li>
+        <mat-icon>storefront</mat-icon>
+        <a routerLink="/tienda" [queryParams]="{ veterinaria: datos.id_veterinaria }">Ver productos</a>
+      </li>
+      @if (datos.correo_electronico; as correo) {
+        <li>
+          <mat-icon>mail</mat-icon>
+          <a [href]="'mailto:' + correo">{{ correo }}</a>
+        </li>
+      }
+    </ul>
+  </section>
+
+  <div class="columnas">
+    <div class="columna">
+      <section class="caja">
+        <h2>Profesionales</h2>
+        <app-carga [recurso]="profesionales" />
+        @if (profesionales.hasValue()) {
+          <ul class="registros">
+            @for (profesional of profesionales.value(); track profesional.id_profesional) {
+              <li class="registro">
+                <mat-icon class="registro__icono">stethoscope</mat-icon>
+                <div>
+                  <div class="registro__titulo">{{ profesional.nombre_completo }}</div>
+                  @if (profesional.especialidad; as especialidad) {
+                    <p class="registro__detalle">{{ especialidad }}</p>
+                  }
+                </div>
+                <div class="registro__acciones">
+                  @if (puedeAgendar()) {
+                    <button matButton="tonal" type="button" (click)="agendar(profesional)">Agendar</button>
+                  }
+                </div>
+              </li>
+            } @empty {
+              <app-vacio icono="stethoscope" titulo="Aún no hay profesionales publicados" />
+            }
+          </ul>
+        }
+      </section>
+
+      <section class="caja">
+        <div class="seccion-titulo">
+          <h2>Reseñas</h2>
+          @if (puedeAgendar() && !miResena()) {
+            <button matButton type="button" (click)="abrirResena()">Escribir reseña</button>
+          }
+        </div>
+        <app-carga [recurso]="resenas" />
+        @if (resenas.hasValue()) {
+          <ul class="resenas">
+            @for (resena of resenas.value(); track resena.id_resena) {
+              <li>
+                <div class="resenas__cabecera">
+                  <strong>{{ resena.nombre_usuario }}</strong>
+                  <app-calificacion [valor]="resena.calificacion" />
+                </div>
+                @if (resena.comentario; as comentario) {
+                  <p>{{ comentario }}</p>
+                }
+                <div class="resenas__pie">
+                  <small>{{ resena.fecha_creacion | date: 'd MMM y' }}</small>
+                  @if (resena.id_resena === miResena()?.id_resena) {
+                    <span>
+                      <button matButton type="button" (click)="abrirResena(resena)">Editar</button>
+                      <button matButton type="button" (click)="eliminarResena(resena)">Eliminar</button>
+                    </span>
+                  }
+                </div>
+              </li>
+            } @empty {
+              <app-vacio icono="reviews" titulo="Todavía no tiene reseñas" />
+            }
+          </ul>
+        }
+      </section>
+    </div>
+
+    @if (punto().length > 0) {
+      <app-mapa class="mapa" [puntos]="punto()" />
+    }
+  </div>
+}

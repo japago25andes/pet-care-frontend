@@ -1,0 +1,78 @@
+<mat-sidenav-container class="shell">
+  <mat-sidenav #lateral class="lateral" [mode]="esMovil() ? 'over' : 'side'" [opened]="!esMovil()" [disableClose]="!esMovil()">
+    <a class="lateral__marca" [routerLink]="inicio()" aria-label="Ir al inicio" (click)="cerrarEnMovil()">
+      <app-logo claro />
+    </a>
+    <nav aria-label="Principal">
+      @for (item of items(); track item.ruta) {
+        <a
+          class="lateral__item"
+          [routerLink]="item.ruta"
+          routerLinkActive="lateral__item--activo"
+          [routerLinkActiveOptions]="{ exact: item.ruta === '/' }"
+          ariaCurrentWhenActive="page"
+          (click)="cerrarEnMovil()"
+        >
+          <mat-icon>{{ item.icono }}</mat-icon>
+          <span>{{ item.etiqueta }}</span>
+          @if (item.ruta === '/mensajes' && mensajes.totalNoLeidos() > 0) {
+            <span class="lateral__contador" [attr.aria-label]="mensajes.totalNoLeidos() + ' sin leer'">
+              {{ mensajes.totalNoLeidos() }}
+            </span>
+          }
+        </a>
+      }
+    </nav>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="principal">
+    <header class="barra">
+      @if (esMovil()) {
+        <button matIconButton aria-label="Abrir menú" (click)="lateral.toggle()">
+          <mat-icon>menu</mat-icon>
+        </button>
+      }
+      <span class="barra__espacio"></span>
+      @if (auth.rol() === 'cliente' && auth.autenticado()) {
+        <a
+          matIconButton
+          routerLink="/carrito"
+          [attr.aria-label]="'Carrito, ' + carrito.unidades() + ' productos'"
+          style="margin-right: 8px"
+        >
+          <mat-icon
+            matBadgeSize="large"
+            [matBadge]="carrito.unidades()"
+            [matBadgeHidden]="carrito.unidades() === 0"
+            aria-hidden="false"
+          >
+            shopping_cart
+          </mat-icon>
+        </a>
+      }
+      @if (auth.autenticado()) {
+        <button class="usuario" [matMenuTriggerFor]="menuUsuario" aria-label="Menú de la cuenta">
+          <span class="usuario__avatar">{{ iniciales() }}</span>
+          <span class="usuario__datos">
+            <strong>{{ auth.usuario()?.nombre_completo }}</strong>
+            <small>{{ nombreRol() }}</small>
+          </span>
+          <mat-icon>expand_more</mat-icon>
+        </button>
+        <mat-menu #menuUsuario="matMenu" xPosition="before">
+          <button mat-menu-item (click)="auth.cerrarSesion()">
+            <mat-icon>logout</mat-icon>
+            <span>Cerrar sesión</span>
+          </button>
+        </mat-menu>
+      } @else {
+        <a matButton routerLink="/login">Entrar</a>
+        <a matButton="filled" routerLink="/registro">Crear cuenta</a>
+      }
+    </header>
+
+    <main class="contenido">
+      <router-outlet />
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>

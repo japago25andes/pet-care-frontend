@@ -1,0 +1,50 @@
+<app-carga [recurso]="medicamentos" />
+
+@if (medicamentos.hasValue()) {
+  @if (medicamentos.value().length === 0) {
+    <app-vacio icono="medication" titulo="Sin medicamentos" texto="Registra tratamientos, dosis y fechas.">
+      <button matButton="filled" type="button" (click)="abrir()">Agregar medicamento</button>
+    </app-vacio>
+  } @else {
+    <div class="barra-seccion">
+      <button matButton type="button" (click)="abrir()"><mat-icon>add</mat-icon> Agregar medicamento</button>
+    </div>
+    <ul class="registros">
+      @for (medicamento of medicamentos.value(); track medicamento.id_medicamento) {
+        <li class="registro">
+          <mat-icon class="registro__icono">medication</mat-icon>
+          <div>
+            <div class="registro__titulo">
+              {{ medicamento.nombre_medicamento }}
+              <app-etiqueta [tono]="estado(medicamento).tono">{{ estado(medicamento).texto }}</app-etiqueta>
+            </div>
+            <p class="registro__detalle">
+              @if (medicamento.dosis; as dosis) {
+                {{ dosis }} {{ medicamento.unidad_medida }} ·
+              }
+              @if (medicamento.frecuencia_administracion; as frecuencia) {
+                {{ frecuencia }} ·
+              }
+              Desde {{ medicamento.fecha_inicio | date: 'd MMM y' }}
+              @if (medicamento.fecha_fin; as fin) {
+                hasta {{ fin | date: 'd MMM y' }}
+              }
+            </p>
+            @if (medicamento.observaciones; as observaciones) {
+              <p class="registro__detalle">{{ observaciones }}</p>
+            }
+          </div>
+          <div class="registro__acciones">
+            <button matIconButton type="button" aria-label="Más opciones" [matMenuTriggerFor]="opciones">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #opciones="matMenu" xPosition="before">
+              <button mat-menu-item (click)="abrir(medicamento)"><mat-icon>edit</mat-icon> Editar</button>
+              <button mat-menu-item (click)="eliminar(medicamento)"><mat-icon>delete</mat-icon> Eliminar</button>
+            </mat-menu>
+          </div>
+        </li>
+      }
+    </ul>
+  }
+}

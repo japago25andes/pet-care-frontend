@@ -1,0 +1,74 @@
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 8px;
+
+  mat-form-field {
+    flex: 1 1 180px;
+    --mat-form-field-outlined-container-color: #fff;
+  }
+
+  &__texto {
+    flex-grow: 3 !important;
+  }
+}
+
+.progreso {
+  height: 4px;
+  margin-bottom: 8px;
+}
+
+.fila {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--pel-borde);
+
+  &:last-child {
+    border-bottom: 0;
+  }
+
+  &__datos {
+    display: grid;
+    flex: 1 1 240px;
+    min-width: 0;
+
+    strong {
+      color: var(--pel-marino);
+    }
+
+    small {
+      color: var(--pel-texto-suave);
+      font-weight: 400;
+    }
+
+    span {
+      color: var(--pel-texto-suave);
+      font-size: 14px;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &__acciones {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  &__rol {
+    width: 160px;
+  }
+}
+
+.paginas {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 12px;
+  color: var(--pel-texto-suave);
+}

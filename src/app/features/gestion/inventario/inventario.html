@@ -1,0 +1,89 @@
+<div class="pagina-encabezado">
+  <h1 class="pagina-titulo">Inventario</h1>
+  @if (idVeterinaria() !== null) {
+    <button matButton="filled" type="button" (click)="abrir()">
+      <mat-icon>add</mat-icon>
+      Agregar producto
+    </button>
+  }
+</div>
+
+<app-carga [recurso]="misVeterinarias" />
+
+@if (misVeterinarias.hasValue()) {
+  @if (activas().length === 0) {
+    <app-vacio
+      class="caja"
+      icono="inventory_2"
+      titulo="Primero registra una veterinaria"
+      texto="Cada producto pertenece a una veterinaria activa."
+    >
+      <a matButton="filled" routerLink="/mis-veterinarias">Ir a mis veterinarias</a>
+    </app-vacio>
+  } @else {
+    <div class="filtros">
+      <mat-form-field class="filtros__texto" subscriptSizing="dynamic">
+        <mat-label>Buscar producto</mat-label>
+        <mat-icon matPrefix>search</mat-icon>
+        <input matInput [value]="busqueda()" (input)="busqueda.set($any($event.target).value)" />
+      </mat-form-field>
+      @if (activas().length > 1) {
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-label>Veterinaria</mat-label>
+          <mat-select [value]="idVeterinaria()" (valueChange)="idVeterinaria.set($event)">
+            @for (veterinaria of activas(); track veterinaria.id_veterinaria) {
+              <mat-option [value]="veterinaria.id_veterinaria">{{ veterinaria.nombre_comercial }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      }
+    </div>
+
+    <app-carga [recurso]="inventario" />
+
+    @if (inventario.hasValue()) {
+      <section class="caja">
+        <ul class="registros">
+          @for (producto of productos(); track producto.id_producto) {
+            <li class="registro" [class.inactivo]="!producto.activo">
+              <app-imagen-producto class="miniatura" [imagen]="producto.imagen_url" [categoria]="producto.categoria" />
+              <div>
+                <div class="registro__titulo">
+                  {{ producto.nombre_producto }}
+                  @if (!producto.activo) {
+                    <app-etiqueta>Inactivo</app-etiqueta>
+                  } @else if (producto.stock === 0) {
+                    <app-etiqueta tono="error">Agotado</app-etiqueta>
+                  } @else if (stockBajo(producto)) {
+                    <app-etiqueta tono="alerta">Stock bajo</app-etiqueta>
+                  }
+                </div>
+                <p class="registro__detalle">
+                  Costo {{ producto.precio_compra | currency: 'COP' : 'symbol-narrow' : '1.0-0' }} · Venta
+                  {{ producto.precio_venta | currency: 'COP' : 'symbol-narrow' : '1.0-0' }} · Stock
+                  <b>{{ producto.stock }}</b>
+                </p>
+              </div>
+              <div class="registro__acciones">
+                @if (producto.activo) {
+                  <button matIconButton type="button" aria-label="Más opciones" [matMenuTriggerFor]="opciones">
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                  <mat-menu #opciones="matMenu" xPosition="before">
+                    <button mat-menu-item (click)="abrir(producto)"><mat-icon>edit</mat-icon> Editar</button>
+                    <button mat-menu-item (click)="desactivar(producto)"><mat-icon>block</mat-icon> Desactivar</button>
+                  </mat-menu>
+                }
+              </div>
+            </li>
+          } @empty {
+            <app-vacio
+              icono="inventory_2"
+              [titulo]="busqueda() ? 'Ningún producto coincide' : 'Aún no tienes productos'"
+            />
+          }
+        </ul>
+      </section>
+    }
+  }
+}

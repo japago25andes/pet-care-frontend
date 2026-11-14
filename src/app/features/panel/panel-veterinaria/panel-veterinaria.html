@@ -1,0 +1,51 @@
+<h1 class="pagina-titulo">Hola, {{ nombre() }}</h1>
+<p class="pagina-subtitulo">Así va tu día.</p>
+
+<app-carga [recurso]="veterinarias" />
+
+@if (veterinarias.hasValue()) {
+  @if (veterinarias.value().length === 0) {
+    <app-vacio
+      class="caja vacio"
+      icono="local_hospital"
+      titulo="Registra tu veterinaria"
+      texto="Es el primer paso para recibir citas y vender productos."
+    >
+      <a matButton="filled" routerLink="/mis-veterinarias">Ir a mis veterinarias</a>
+    </app-vacio>
+  } @else {
+    @if (pedidosPendientes() > 0) {
+      <a class="pendientes" routerLink="/pedidos-recibidos">
+        <mat-icon>receipt_long</mat-icon>
+        <span>
+          {{ pedidosPendientes() }}
+          {{ pedidosPendientes() === 1 ? 'pedido por confirmar' : 'pedidos por confirmar' }}
+        </span>
+        <mat-icon>chevron_right</mat-icon>
+      </a>
+    }
+
+    <div class="columnas">
+      <section class="caja">
+        <h2>Citas de hoy</h2>
+        <app-carga [recurso]="citas" />
+        @if (citas.hasValue()) {
+          @for (cita of citasHoy(); track cita.id_cita) {
+            <app-cita-agenda [cita]="cita" (actualizada)="citas.reload()" />
+          } @empty {
+            <app-vacio icono="event_available" titulo="No tienes citas por atender hoy" />
+          }
+        }
+      </section>
+
+      <nav class="accesos" aria-label="Accesos rápidos">
+        @for (acceso of accesos; track acceso.ruta) {
+          <a [routerLink]="acceso.ruta">
+            <mat-icon>{{ acceso.icono }}</mat-icon>
+            <span>{{ acceso.etiqueta }}</span>
+          </a>
+        }
+      </nav>
+    </div>
+  }
+}

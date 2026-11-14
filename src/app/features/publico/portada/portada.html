@@ -1,0 +1,66 @@
+<header class="barra">
+  <app-logo claro />
+  <nav aria-label="Cuenta">
+    <a matButton class="entrar" routerLink="/veterinarias">Veterinarias</a>
+    <a matButton class="entrar" routerLink="/login">Entrar</a>
+    <a matButton="filled" class="crear" routerLink="/registro">Crear cuenta</a>
+  </nav>
+</header>
+
+<main>
+  <section class="heroe">
+    <div class="heroe__texto">
+      <h1>El cuidado de tu mascota, sin perder nada de vista.</h1>
+      <p>Citas, vacunas, medicamentos y compras en un solo lugar, conectado con tu veterinaria.</p>
+      <a matButton="filled" class="crear crear--grande" routerLink="/registro">
+        Empezar gratis
+        <mat-icon iconPositionEnd>arrow_forward</mat-icon>
+      </a>
+    </div>
+
+    <div class="ficha" aria-hidden="true">
+      <div class="ficha__cabecera">
+        <span class="ficha__avatar"><mat-icon>pets</mat-icon></span>
+        <div>
+          <strong>Luna</strong>
+          <small>Labrador · 5 años</small>
+        </div>
+      </div>
+      <ul>
+        <li>
+          <mat-icon>vaccines</mat-icon>
+          <span>Vacuna de rabia</span>
+          <em class="ok">Al día</em>
+        </li>
+        <li>
+          <mat-icon>event</mat-icon>
+          <span>Control anual</span>
+          <em>Jueves 3:00 p. m.</em>
+        </li>
+        <li>
+          <mat-icon>notifications</mat-icon>
+          <span>Pipeta antipulgas</span>
+          <em class="alerta">Hoy</em>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="funciones" aria-label="Qué puedes hacer">
+    @for (funcion of funciones; track funcion.icono) {
+      <article>
+        <mat-icon>{{ funcion.icono }}</mat-icon>
+        <h2>{{ funcion.titulo }}</h2>
+        <p>{{ funcion.texto }}</p>
+      </article>
+    }
+  </section>
+
+  <section class="clinicas">
+    <div>
+      <h2>¿Tienes una veterinaria?</h2>
+      <p>Publica tu agenda y tu inventario, y recibe citas y pedidos desde un solo panel.</p>
+    </div>
+    <a matButton="outlined" routerLink="/registro" [queryParams]="{ rol: 'veterinaria' }">Registrar mi veterinaria</a>
+  </section>
+</main>

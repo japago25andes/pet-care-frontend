@@ -1,0 +1,83 @@
+<div class="pagina-encabezado">
+  <h1 class="pagina-titulo">Usuarios</h1>
+</div>
+
+<div class="filtros">
+  <mat-form-field class="filtros__texto" subscriptSizing="dynamic">
+    <mat-label>Buscar por nombre o correo</mat-label>
+    <mat-icon matPrefix>search</mat-icon>
+    <input matInput [formControl]="busqueda" />
+  </mat-form-field>
+  <mat-form-field subscriptSizing="dynamic">
+    <mat-label>Rol</mat-label>
+    <mat-select [value]="rol()" (valueChange)="filtrarRol($event)">
+      <mat-option [value]="null">Todos</mat-option>
+      @for (opcion of roles; track opcion[0]) {
+        <mat-option [value]="opcion[0]">{{ opcion[1] }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<div class="progreso">
+  @if (resultado.isLoading() && usuarios()) {
+    <mat-progress-bar mode="indeterminate" />
+  }
+</div>
+
+@if (!usuarios() || resultado.error()) {
+  <app-carga [recurso]="resultado" />
+}
+
+@if (usuarios(); as lista) {
+  <section class="caja">
+    @for (usuario of lista; track usuario.id_usuario) {
+      <div class="fila">
+        <div class="fila__datos">
+          <strong>
+            {{ usuario.nombre_completo }}
+            @if (usuario.id_usuario === miId()) {
+              <small>(tú)</small>
+            }
+            @if (!usuario.activo) {
+              <app-etiqueta tono="error">Inactivo</app-etiqueta>
+            }
+          </strong>
+          <span>{{ usuario.correo_electronico }}</span>
+        </div>
+        <div class="fila__acciones">
+          <mat-form-field class="fila__rol" subscriptSizing="dynamic">
+            <mat-select
+              aria-label="Rol"
+              [value]="usuario.rol"
+              [disabled]="usuario.id_usuario === miId()"
+              (selectionChange)="cambiarRol(usuario, $event.value)"
+            >
+              @for (opcion of roles; track opcion[0]) {
+                <mat-option [value]="opcion[0]">{{ opcion[1] }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <button
+            matButton="outlined"
+            type="button"
+            [disabled]="usuario.id_usuario === miId()"
+            (click)="cambiarEstado(usuario)"
+          >
+            {{ usuario.activo ? 'Desactivar' : 'Activar' }}
+          </button>
+        </div>
+      </div>
+    } @empty {
+      <app-vacio icono="group" titulo="No hay usuarios con esos filtros" />
+    }
+  </section>
+
+  @if (pagina() > 0 || hayMas()) {
+    <div class="paginas">
+      <button matButton type="button" [disabled]="pagina() === 0" (click)="pagina.set(pagina() - 1)">Anterior</button>
+      <span>Página {{ pagina() + 1 }}</span>
+      <button matButton type="button" [disabled]="!hayMas()" (click)="pagina.set(pagina() + 1)">Siguiente</button>
+    </div>
+  }
+}

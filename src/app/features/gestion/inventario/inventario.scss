@@ -1,0 +1,21 @@
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+
+  mat-form-field {
+    flex: 1 1 220px;
+    --mat-form-field-outlined-container-color: #fff;
+  }
+}
+
+.miniatura {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+}
+
+.inactivo {
+  opacity: 0.6;
+}

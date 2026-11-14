@@ -1,0 +1,39 @@
+<h2 mat-dialog-title>{{ datos.resena ? 'Editar reseña' : 'Calificar' }} · {{ datos.nombreVeterinaria }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="guardar()" novalidate>
+  <mat-dialog-content class="formulario">
+    @if (error(); as mensaje) {
+      <p class="aviso aviso--error" role="alert">{{ mensaje }}</p>
+    }
+
+    <fieldset class="estrellas" aria-label="Calificación">
+      @for (valor of valores; track valor) {
+        <button
+          type="button"
+          [class.llena]="valor <= seleccion()"
+          [attr.aria-label]="valor + (valor === 1 ? ' estrella' : ' estrellas')"
+          [attr.aria-pressed]="valor === seleccion()"
+          (click)="elegir(valor)"
+        >
+          <mat-icon>star</mat-icon>
+        </button>
+      }
+    </fieldset>
+    @if (faltaCalificacion()) {
+      <p class="falta" role="alert">Elige una calificación</p>
+    }
+
+    <mat-form-field>
+      <mat-label>Comentario (opcional)</mat-label>
+      <textarea matInput rows="3" formControlName="comentario"></textarea>
+      <mat-error>{{ mensajeDeCampo(form.controls.comentario) }}</mat-error>
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button matButton type="button" mat-dialog-close>Cancelar</button>
+    <button matButton="filled" type="submit" [disabled]="enviando()">
+      {{ enviando() ? 'Guardando…' : 'Guardar' }}
+    </button>
+  </mat-dialog-actions>
+</form>

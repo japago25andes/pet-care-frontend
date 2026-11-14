@@ -1,0 +1,49 @@
+<div class="pagina-encabezado">
+  <h1 class="pagina-titulo">Agenda</h1>
+  @if (veterinarias.hasValue() && veterinarias.value().length > 1) {
+    <mat-form-field class="filtro" subscriptSizing="dynamic">
+      <mat-label>Veterinaria</mat-label>
+      <mat-select [value]="filtro()" (valueChange)="filtro.set($event)">
+        <mat-option [value]="null">Todas</mat-option>
+        @for (veterinaria of veterinarias.value(); track veterinaria.id_veterinaria) {
+          <mat-option [value]="veterinaria.id_veterinaria">{{ veterinaria.nombre_comercial }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  }
+</div>
+
+<app-carga [recurso]="desdeHoy" />
+@if (anteriores.error()) {
+  <app-carga [recurso]="anteriores" />
+}
+
+<ng-template #lista let-grupos>
+  @for (grupo of grupos; track grupo.dia) {
+    <section class="dia">
+      <h2>{{ grupo.dia | date: 'EEEE d MMMM' }}</h2>
+      @for (cita of grupo.citas; track cita.id_cita) {
+        <app-cita-agenda [cita]="cita" (actualizada)="recargar()" />
+      }
+    </section>
+  }
+</ng-template>
+
+@if (desdeHoy.hasValue() && anteriores.hasValue()) {
+  <mat-tab-group class="caja pestanas" mat-stretch-tabs="false" animationDuration="150ms">
+    <mat-tab label="Próximas">
+      @if (proximas().length === 0) {
+        <app-vacio icono="event_available" titulo="No hay citas por atender" />
+      } @else {
+        <ng-container *ngTemplateOutlet="lista; context: { $implicit: proximas() }" />
+      }
+    </mat-tab>
+    <mat-tab label="Historial">
+      @if (historial().length === 0) {
+        <app-vacio icono="history" titulo="Aún no hay historial" />
+      } @else {
+        <ng-container *ngTemplateOutlet="lista; context: { $implicit: historial() }" />
+      }
+    </mat-tab>
+  </mat-tab-group>
+}

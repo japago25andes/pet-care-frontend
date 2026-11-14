@@ -1,0 +1,95 @@
+<a class="volver" [routerLink]="volverA()">
+  <mat-icon>chevron_left</mat-icon>
+  Volver
+</a>
+<div class="pagina-encabezado">
+  <h1 class="pagina-titulo">{{ editando() ? 'Editar mascota' : 'Nueva mascota' }}</h1>
+</div>
+
+@if (error(); as mensaje) {
+  <p class="aviso aviso--error" role="alert">{{ mensaje }}</p>
+}
+
+@if (cargando()) {
+  <mat-spinner diameter="32" style="margin: 32px auto" />
+} @else {
+  <form class="caja formulario formulario--dos" [formGroup]="form" (ngSubmit)="guardar()" novalidate>
+    <mat-form-field>
+      <mat-label>Nombre</mat-label>
+      <input matInput formControlName="nombre" />
+      <mat-error>{{ mensajeDeCampo(form.controls.nombre) }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Especie</mat-label>
+      <input matInput formControlName="especie" [matAutocomplete]="listaEspecies" />
+      <mat-autocomplete #listaEspecies="matAutocomplete">
+        @for (especie of especies; track especie) {
+          <mat-option [value]="especie">{{ especie }}</mat-option>
+        }
+      </mat-autocomplete>
+      <mat-error>{{ mensajeDeCampo(form.controls.especie) }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Raza (opcional)</mat-label>
+      <input matInput formControlName="raza" />
+      <mat-error>{{ mensajeDeCampo(form.controls.raza) }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Sexo (opcional)</mat-label>
+      <mat-select formControlName="sexo">
+        <mat-option [value]="null">Sin indicar</mat-option>
+        <mat-option value="macho">Macho</mat-option>
+        <mat-option value="hembra">Hembra</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Fecha de nacimiento (opcional)</mat-label>
+      <input matInput type="date" formControlName="fecha_nacimiento" [max]="hoy" />
+      <mat-error>{{ mensajeDeCampo(form.controls.fecha_nacimiento) }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Peso en kg (opcional)</mat-label>
+      <input matInput type="number" step="0.01" min="0" formControlName="peso_kg" />
+      <mat-error>{{ mensajeDeCampo(form.controls.peso_kg) }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Color (opcional)</mat-label>
+      <input matInput formControlName="color_mascota" />
+      <mat-error>{{ mensajeDeCampo(form.controls.color_mascota) }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Número de chip (opcional)</mat-label>
+      <input matInput formControlName="numero_chip" />
+      <mat-error>{{ mensajeDeCampo(form.controls.numero_chip) }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="ancho">
+      <mat-label>Enlace de la foto (opcional)</mat-label>
+      <input matInput type="url" formControlName="foto_url" placeholder="https://…" />
+      <mat-error>{{ mensajeDeCampo(form.controls.foto_url) }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="ancho">
+      <mat-label>Alergias (opcional)</mat-label>
+      <textarea matInput rows="2" formControlName="alergias"></textarea>
+      <mat-error>{{ mensajeDeCampo(form.controls.alergias) }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="ancho">
+      <mat-label>Condiciones médicas (opcional)</mat-label>
+      <textarea matInput rows="2" formControlName="condiciones_medicas"></textarea>
+      <mat-error>{{ mensajeDeCampo(form.controls.condiciones_medicas) }}</mat-error>
+    </mat-form-field>
+
+    <button class="ancho" matButton="filled" type="submit" [disabled]="enviando()">
+      {{ enviando() ? 'Guardando…' : 'Guardar' }}
+    </button>
+  </form>
+}

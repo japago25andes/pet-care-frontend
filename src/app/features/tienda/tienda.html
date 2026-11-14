@@ -1,0 +1,103 @@
+<div class="pagina-encabezado">
+  <div>
+    <h1 class="pagina-titulo">Tienda</h1>
+    <p class="pagina-subtitulo">Productos de las veterinarias de PeludOS.</p>
+  </div>
+  @if (carrito.unidades() > 0) {
+    <a matButton="filled" routerLink="/carrito">
+      <mat-icon>shopping_cart</mat-icon>
+      Ver carrito ({{ carrito.unidades() }})
+    </a>
+  }
+</div>
+
+<div class="filtros">
+  <mat-form-field class="filtros__texto" subscriptSizing="dynamic">
+    <mat-label>Buscar producto</mat-label>
+    <mat-icon matPrefix>search</mat-icon>
+    <input matInput [formControl]="busqueda" />
+  </mat-form-field>
+
+  <mat-form-field subscriptSizing="dynamic">
+    <mat-label>Categoría</mat-label>
+    <mat-select [value]="categoria()" (valueChange)="cambiarCategoria($event)">
+      <mat-option [value]="null">Todas</mat-option>
+      @for (opcion of categorias; track opcion.valor) {
+        <mat-option [value]="opcion.valor">{{ opcion.texto }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field subscriptSizing="dynamic">
+    <mat-label>Veterinaria</mat-label>
+    <mat-select [value]="idVeterinaria()" (valueChange)="cambiarVeterinaria($event)">
+      <mat-option [value]="null">Todas</mat-option>
+      @if (veterinarias.hasValue()) {
+        @for (opcion of veterinarias.value(); track opcion.id_veterinaria) {
+          <mat-option [value]="opcion.id_veterinaria">{{ opcion.nombre_comercial }}</mat-option>
+        }
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-checkbox [checked]="conStock()" (change)="conStock.set($event.checked)">Solo disponibles</mat-checkbox>
+</div>
+
+<div class="progreso">
+  @if (resultado.isLoading() && productos()) {
+    <mat-progress-bar mode="indeterminate" />
+  }
+</div>
+
+@if (!productos() || resultado.error()) {
+  <app-carga [recurso]="resultado" />
+}
+
+@if (productos(); as lista) {
+  @if (lista.length === 0) {
+    <app-vacio class="caja" icono="storefront" titulo="No encontramos productos" texto="Prueba cambiando los filtros." />
+  } @else {
+    <div class="productos">
+      @for (producto of lista; track producto.id_producto) {
+        <article class="producto">
+          <app-imagen-producto class="producto__imagen" [imagen]="producto.imagen_url" [categoria]="producto.categoria" />
+          <div class="producto__cuerpo">
+            <h2>{{ producto.nombre_producto }}</h2>
+            <a class="producto__veterinaria" [routerLink]="['/veterinarias', producto.id_veterinaria]">
+              {{ nombreVeterinaria(producto.id_veterinaria) }}
+            </a>
+            @if (producto.descripcion; as descripcion) {
+              <p>{{ descripcion }}</p>
+            }
+            <div class="producto__pie">
+              <div>
+                <strong>{{ producto.precio_venta | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</strong>
+                @if (producto.stock === 0) {
+                  <app-etiqueta tono="error">Agotado</app-etiqueta>
+                } @else if (stockBajo(producto)) {
+                  <app-etiqueta tono="alerta">Quedan {{ producto.stock }}</app-etiqueta>
+                }
+              </div>
+              @if (puedeComprar()) {
+                <button
+                  matButton="tonal"
+                  type="button"
+                  [disabled]="producto.stock === 0 || agregando() === producto.id_producto"
+                  (click)="agregar(producto)"
+                >
+                  Agregar
+                </button>
+              }
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+
+    @if (hayMas()) {
+      <div class="mas">
+        <button matButton="outlined" type="button" (click)="cargarMas()">Cargar más</button>
+      </div>
+    }
+  }
+}
